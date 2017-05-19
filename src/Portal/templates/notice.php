@@ -1,0 +1,1 @@
+Portal &gt; Notice template. Please override in <code>theme_folder/parts/portal/notice.php</code>.

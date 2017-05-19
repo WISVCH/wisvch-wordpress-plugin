@@ -1,0 +1,1 @@
+Portal &gt; Edit Profile template. Please override in <code>theme_folder/parts/portal/edit-profile.php</code>.

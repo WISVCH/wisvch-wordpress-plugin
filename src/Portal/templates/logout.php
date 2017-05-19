@@ -1,0 +1,1 @@
+Portal &gt; Log Out template. Please override in <code>theme_folder/parts/portal/logout.php</code>.

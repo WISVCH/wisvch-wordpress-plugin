@@ -1,0 +1,1 @@
+Portal &gt; Overview template. Please override in <code>theme_folder/parts/portal/overview.php</code>.

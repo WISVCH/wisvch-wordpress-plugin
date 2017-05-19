@@ -1,0 +1,1 @@
+Portal &gt; Sidebar template. Please override in <code>theme_folder/parts/portal/sidebar.php</code>.

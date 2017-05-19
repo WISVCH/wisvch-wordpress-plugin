@@ -1,0 +1,1 @@
+Portal &gt; Log In template. Please override in <code>theme_folder/parts/portal/login.php</code>.
