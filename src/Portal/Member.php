@@ -27,7 +27,12 @@ class Member
         add_action('wp_login', [__CLASS__, 'set_last_login']);
     }
 
-    static function ch_connect_user_creation($user, $user_claim)
+    /**
+     * Change WP_User role to `ch_member`.
+     *
+     * @param $user
+     */
+    static function ch_connect_user_creation($user)
     {
 
         if (is_a($user, 'WP_User')) {
@@ -70,7 +75,12 @@ class Member
         return false;
     }
 
-    static function _isChMemberExclusively()
+    /**
+     * Check whether or not the user's only role is `ch_member`.
+     *
+     * @return bool
+     */
+    static function _is_ch_member_exclusively()
     {
         // Get current user
         $user = wp_get_current_user();
@@ -86,37 +96,57 @@ class Member
     }
 
     /**
-     * Dashboard Redirect.
+     * Dashboard redirect.
      */
     static function admin_init()
     {
 
-        if (self::_isChMemberExclusively()) {
+        if (self::_is_ch_member_exclusively()) {
 
             // Redirect to user portal
-            wp_redirect(Portal::getUrl());
+            wp_redirect(Init::getUrl());
             exit;
         }
     }
 
     /**
-     * Hide Toolbar Items.
+     * Hide toolbar items.
      */
     static function init()
     {
-        if (self::_isChMemberExclusively()) {
+        if (self::_is_ch_member_exclusively()) {
 
             // Disable admin bar.
             show_admin_bar(false);
         }
     }
 
-    //function for setting the last login
+    /**
+     * Store user's last login time.
+     *
+     * @param $login
+     */
     static function set_last_login($login)
     {
         $user = get_user_by('login', $login);
 
         //add or update the last login value for logged in user
         update_user_meta($user->ID, 'last_login', current_time('mysql', true));
+    }
+
+    static function get_user_claim()
+    {
+
+        // Get current user
+        $user = wp_get_current_user();
+
+        // Load user claim
+        $claim = get_user_meta($user->ID, 'openid-connect-generic-last-user-claim', true);
+
+        if (empty($claim)) {
+            return [];
+        } else {
+            return $claim;
+        }
     }
 }

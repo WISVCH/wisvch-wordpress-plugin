@@ -2,22 +2,14 @@
 
 namespace WISVCH\Portal\Shortcodes;
 
-use WISVCH\Portal\Shortcodes;
+use WISVCH\Portal\Template;
 
 /**
  * Portal edit profile page.
  *
  * @package WISVCH\Portal\Shortcodes
  */
-class Logout
+class Logout extends Template
 {
-    /**
-     * Render template.
-     */
-    static function output()
-    {
-
-        // Include template if redirect fails
-        Shortcodes::get_template('logout.php');
-    }
+    const TEMPLATE_NAME = 'logout.php';
 }

@@ -60,7 +60,7 @@ class Shortcodes
      */
     public static function overview()
     {
-        return self::shortcode_wrapper([Shortcodes\Overview::class, 'output']);
+        return self::shortcode_wrapper([Shortcodes\Overview::class, 'output'], [true]);
     }
 
     /**
@@ -70,7 +70,7 @@ class Shortcodes
      */
     public static function edit_profile()
     {
-        return self::shortcode_wrapper([Shortcodes\Profile::class, 'output']);
+        return self::shortcode_wrapper([Shortcodes\Profile::class, 'output'], [true]);
     }
 
     /**

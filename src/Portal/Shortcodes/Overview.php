@@ -2,23 +2,16 @@
 
 namespace WISVCH\Portal\Shortcodes;
 
-use WISVCH\Portal\Shortcodes;
+use WISVCH\Portal\Template;
 
 /**
  * Portal overview page.
  *
  * @package WISVCH\Portal\Shortcodes
  */
-class Overview
+class Overview extends Template
 {
-    /**
-     * Render template.
-     */
-    static function output()
-    {
-
-        Shortcodes::get_template('overview.php', self::getTemplateData(), true);
-    }
+    const TEMPLATE_NAME = 'overview.php';
 
     /**
      * Prepare data for use in the template.
@@ -28,17 +21,10 @@ class Overview
     static function getTemplateData()
     {
 
-        // Get WordPress user object
-        $user = wp_get_current_user();
-
-        // @TODO import OpenID data here somewhere (or load from db)
+        $return_data = parent::getTemplateData();
 
         // Return data
-        $return_data = [
-            'user' => $user->data,
-            'meta' => get_user_meta($user->ID),
-            'greeting' => self::_greeting(),
-        ];
+        $return_data['greeting'] = self::_greeting();
 
         return $return_data;
     }

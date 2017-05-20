@@ -7,7 +7,7 @@ namespace WISVCH\Portal;
  *
  * @package WISVCH\Portal
  */
-class Portal
+class Init
 {
     static $user_portal_url;
 

@@ -2,8 +2,8 @@
 
 namespace WISVCH\Portal\Shortcodes;
 
-use WISVCH\Portal\Shortcodes;
 use WISVCH\Portal\Member;
+use WISVCH\Portal\Template;
 
 /**
  * Portal edit profile page.
@@ -12,16 +12,9 @@ use WISVCH\Portal\Member;
  *
  * @package WISVCH\Portal\Shortcodes
  */
-class Profile
+class Profile extends Template
 {
-    /**
-     * Render template.
-     */
-    static function output()
-    {
-
-        Shortcodes::get_template('edit-profile.php', self::getTemplateData(), true);
-    }
+    const TEMPLATE_NAME = 'edit-profile.php';
 
     /**
      * Prepare data for use in the template.
@@ -31,23 +24,16 @@ class Profile
     static function getTemplateData()
     {
 
-        $return_data = [];
+        $return_data = parent::getTemplateData();
 
-        // Get WordPress user object
-        $user = wp_get_current_user();
-        $return_data['user'] = $user->data;
+        $return_data['ch_member'] = Member::_is_ch_member_exclusively();
 
         // Get CH Connect data
-        if (Member::_isChMemberExclusively()) {
-            $ch_connect = get_user_meta($user->ID, 'openid-connect-generic-last-user-claim', true);
-            $return_data['ch_connect'] = $ch_connect;
-        } else {
-            $return_data['ch_connect'] = false;
-        }
+        $return_data['ch_connect'] = Member::get_user_claim();
 
         // Process form if POST request
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-            $return_data['notice'] = self::_processForm($ch_connect);
+            $return_data['notice'] = self::_processForm($return_data['ch_connect']);
         }
 
         return $return_data;
@@ -74,6 +60,13 @@ class Profile
         }
     }
 
+    /**
+     * Find value in multidimensional array.
+     *
+     * @param string|array $key Single- or multidimensional key to look for.
+     * @param $store Data store.
+     * @return mixed|string Empty string if key not found, else value at $key in $store.
+     */
     private static function _getArrayValueDeep($key, $store)
     {
 
@@ -115,6 +108,11 @@ class Profile
      */
     private static function _processForm($ch_connect)
     {
+
+        // Check nonce
+        if (false === wp_verify_nonce($_POST["_wpnonce"], 'wisvch_portal_edit-profile')) {
+            return "<h5>Error</h5><p>Could not update profile information.</p>";
+        }
 
         $inputs = [
             'user_name' => 'Full Name',

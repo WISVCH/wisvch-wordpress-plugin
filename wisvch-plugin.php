@@ -53,7 +53,7 @@ class WISVCH_Plugin
         new CPT\News\Init();
 
         // Init Portal
-        new Portal\Portal();
+        new Portal\Init();
 
         // Add separator to admin menu
         add_action('admin_init', [$this, 'add_admin_menu_separator']);
