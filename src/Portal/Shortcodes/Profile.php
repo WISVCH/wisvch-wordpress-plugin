@@ -3,6 +3,7 @@
 namespace WISVCH\Portal\Shortcodes;
 
 use WISVCH\Portal\Member;
+use WISVCH\Portal\Shortcodes;
 use WISVCH\Portal\Template;
 
 /**
@@ -112,6 +113,11 @@ class Profile extends Template
         // Check nonce
         if (false === wp_verify_nonce($_POST["_wpnonce"], 'wisvch_portal_edit-profile')) {
             return "<h5>Error</h5><p>Could not update profile information.</p>";
+        }
+
+        // Check if logged in
+        if (Shortcodes::check_auth()) {
+            return "<h5>Error</h5><p>You are not logged in.</p>";
         }
 
         $inputs = [

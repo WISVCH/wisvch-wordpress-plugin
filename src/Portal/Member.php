@@ -101,7 +101,7 @@ class Member
     static function admin_init()
     {
 
-        if (self::_is_ch_member_exclusively()) {
+        if (!DOING_AJAX && self::_is_ch_member_exclusively()) {
 
             // Redirect to user portal
             wp_redirect(Init::getUrl());
