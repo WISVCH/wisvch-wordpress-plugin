@@ -5,7 +5,7 @@ namespace WISVCH\CPT\Slide;
 /**
  * Registration of CPT and related taxonomies.
  *
- * @package   W3Cie_Post_Types\Slide
+ * @package   WISVCH\Slide
  */
 class Init
 {

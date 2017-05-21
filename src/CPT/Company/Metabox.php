@@ -5,7 +5,7 @@ namespace WISVCH\CPT\Company;
 /**
  * Register metaboxes.
  *
- * @package W3Cie_Post_Types\Company;
+ * @package WISVCH\Company;
  */
 class Metabox
 {

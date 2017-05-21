@@ -5,7 +5,7 @@ namespace WISVCH\CPT\JobOpening;
 /**
  * Register metaboxes.
  *
- * @package W3Cie_Post_Types\JobOpening;
+ * @package WISVCH\JobOpening;
  */
 class Metabox {
 

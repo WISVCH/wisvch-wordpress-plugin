@@ -5,7 +5,7 @@ namespace WISVCH\CPT\Board;
 /**
  * Registration of CPT and related taxonomies.
  *
- * @package   W3Cie_Post_Types\Board
+ * @package   WISVCH\Board
  */
 class Init
 {

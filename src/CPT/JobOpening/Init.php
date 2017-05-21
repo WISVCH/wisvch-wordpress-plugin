@@ -5,7 +5,7 @@ namespace WISVCH\CPT\JobOpening;
 /**
  * Registration of CPT and related taxonomies.
  *
- * @package   W3Cie_Post_Types\JobOpening
+ * @package   WISVCH\JobOpening
  */
 class Init {
 

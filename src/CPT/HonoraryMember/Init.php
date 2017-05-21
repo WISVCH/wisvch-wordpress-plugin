@@ -5,7 +5,7 @@ namespace WISVCH\CPT\HonoraryMember;
 /**
  * Registration of CPT and related taxonomies.
  *
- * @package   W3Cie_Post_Types\HonoraryMember
+ * @package   WISVCH\HonoraryMember
  */
 class Init {
 

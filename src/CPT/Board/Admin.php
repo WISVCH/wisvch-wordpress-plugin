@@ -5,7 +5,7 @@ namespace WISVCH\CPT\Board;
 /**
  * Register post types and taxonomies.
  *
- * @package W3Cie_Post_Types\Board;
+ * @package WISVCH\Board;
  */
 class Admin
 {

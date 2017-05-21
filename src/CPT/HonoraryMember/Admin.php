@@ -4,7 +4,7 @@ namespace WISVCH\CPT\HonoraryMember;
 /**
  * Register post types and taxonomies.
  *
- * @package W3Cie_Post_Types\HonoraryMember;
+ * @package WISVCH\HonoraryMember;
  */
 class Admin {
 

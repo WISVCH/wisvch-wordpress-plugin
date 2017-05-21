@@ -5,7 +5,7 @@ namespace WISVCH\CPT\News;
 /**
  * Rebrand default post type to News.
  *
- * @package   W3Cie_Post_Types\News
+ * @package   WISVCH\News
  */
 class Init
 {

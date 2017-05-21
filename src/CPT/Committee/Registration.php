@@ -5,7 +5,7 @@ namespace WISVCH\CPT\Committee;
 /**
  * Register post types and taxonomies.
  *
- * @package W3Cie_Post_Types\Committee;
+ * @package WISVCH\Committee;
  */
 class Registration
 {

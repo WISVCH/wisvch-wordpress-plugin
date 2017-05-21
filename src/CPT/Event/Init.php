@@ -1,11 +1,11 @@
 <?php
 
-namespace WISVCH\CPT\Company;
+namespace WISVCH\CPT\Event;
 
 /**
  * Registration of CPT and related taxonomies.
  *
- * @package   WISVCH\Company
+ * @package WISVCH\CPT\Event
  */
 class Init
 {
@@ -13,8 +13,6 @@ class Init
 
     /**
      * Initialize the plugin by setting localization and new site activation hooks.
-     *
-     * @since 0.1.0
      */
     public function __construct()
     {
@@ -33,7 +31,6 @@ class Init
         $metaboxes->init();
 
         if (is_admin()) {
-
             $admin = new Admin($registration);
             $admin->init();
         }
@@ -45,14 +42,6 @@ class Init
     public function activate()
     {
         $this->registration_handler->register();
-        flush_rewrite_rules();
     }
 
-    /**
-     * Fired for each blog when the plugin is deactivated.
-     */
-    public function deactivate()
-    {
-        flush_rewrite_rules();
-    }
 }

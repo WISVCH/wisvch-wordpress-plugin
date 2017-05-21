@@ -1,11 +1,11 @@
 <?php
 
-namespace WISVCH\CPT\Slide;
+namespace WISVCH\CPT\Event;
 
 /**
  * Register post types and taxonomies.
  *
- * @package WISVCH\Slide;
+ * @package WISVCH\CPT\Event;
  */
 class Admin
 {
@@ -64,6 +64,26 @@ class Admin
                 echo get_the_post_thumbnail(get_the_ID(), [35, 35]);
                 break;
         }
+    }
+
+    /**
+     * Build a series of option elements from an array.
+     *
+     * Also checks to see if one of the options is selected.
+     *
+     * @param  array $terms Array of term objects.
+     * @param  string $current_tax_slug Slug of currently selected term.
+     *
+     * @return string Markup.
+     */
+    protected function build_term_options($terms, $current_tax_slug)
+    {
+        $options = '';
+        foreach ($terms as $term) {
+            $options .= sprintf('<option value="%s"%s />%s</option>', esc_attr($term->slug), selected($current_tax_slug, $term->slug), esc_html($term->name.'('.$term->count.')'));
+        }
+
+        return $options;
     }
 
     /**

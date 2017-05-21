@@ -45,6 +45,7 @@ class WISVCH_Plugin
         new CPT\Board\Init();
         new CPT\Committee\Init();
         new CPT\Company\Init();
+        new CPT\Event\Init();
         new CPT\HonoraryMember\Init();
         new CPT\JobOpening\Init();
         new CPT\Slide\Init();
