@@ -19,6 +19,9 @@ if (! defined('WPINC')) {
     die;
 }
 
+// Define base path
+define('WISVCH_ASSET_BASE', __FILE__);
+
 // Load autoloader
 require "autoloader.php";
 
@@ -55,6 +58,9 @@ class WISVCH_Plugin
 
         // Init Portal
         new Portal\Init();
+
+        // Init Events Synchronizer
+        new EventsSync\Init();
 
         // Add separator to admin menu
         add_action('admin_init', [$this, 'add_admin_menu_separator']);
@@ -125,7 +131,6 @@ class WISVCH_Plugin
 
         // Update permalinks
         flush_rewrite_rules();
-
         // Don't remove roles here, because existing members would be converted to another role.
 
     }

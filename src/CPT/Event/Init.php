@@ -34,6 +34,9 @@ class Init
             $admin = new Admin($registration);
             $admin->init();
         }
+
+        // Initialize API
+        Api::register_hooks();
     }
 
     /**
@@ -43,5 +46,4 @@ class Init
     {
         $this->registration_handler->register();
     }
-
 }

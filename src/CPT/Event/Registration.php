@@ -73,6 +73,9 @@ class Registration
             ],
             'menu_position' => 40,
             'menu_icon' => 'dashicons-calendar',
+            'show_in_rest' => true,
+            'rest_base' => 'events',
+            'rest_controller_class'
         ];
 
         $args = apply_filters('events_post_type_args', $args);
