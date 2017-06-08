@@ -10,7 +10,7 @@ namespace WISVCH\EventsSync;
 class Routes
 {
     /**
-     * Hook into Wordprss.
+     * Initialize routes
      */
     static function register_hooks()
     {
@@ -25,9 +25,14 @@ class Routes
     static function add_endpoints()
     {
 
-        register_rest_route('events-sync/v1', '/add/(?P<id>\d+)', [
-            'methods' => 'GET',
-            'callback' => ['my_awesome_func'],
+        register_rest_route('events-sync/v1', '/single/(?P<id>\d+)', [
+            'methods' => 'POST',
+            'callback' => [Sync::class, 'add_single'],
+        ]);
+
+        register_rest_route('events-sync/v1', '/single/(?P<id>\d+)', [
+            'methods' => 'DELETE',
+            'callback' => [Sync::class, 'delete_single'],
         ]);
     }
 }

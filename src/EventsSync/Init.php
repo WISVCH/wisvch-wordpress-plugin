@@ -15,8 +15,8 @@ class Init
     function __construct()
     {
 
-        // TODO Register endpoints
-        //
+        // Register endpoints
+        Routes::register_hooks();
 
         if (is_admin()) {
 

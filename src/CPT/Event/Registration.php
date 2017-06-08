@@ -63,10 +63,10 @@ class Registration
             'labels' => $labels,
             'supports' => $supports,
             'public' => true,
-            'has_archive' => true,
+            'has_archive' => false,
             'capability_type' => 'page',
             'rewrite' => [
-                'slug' => 'events',
+                'slug' => 'activities/event',
                 'with_front' => false,
                 'feeds' => null,
                 'pages' => false,

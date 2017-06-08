@@ -40,14 +40,14 @@ jQuery(function ($) {
 
         // Add spinner
         t.find('.label').hide();
-        t.find('.spinner').addClass('is-active');
+        t.find('.spinner').show().addClass('is-active');
         t.prop('readonly', true);
 
         // Connect to CH Events
         Events.testConnection(url, function (exists) {
 
             // Remove spinner
-            t.find('.spinner').removeClass('is-active');
+            t.find('.spinner').hide().removeClass('is-active');
 
             // Update label
             if (exists) {

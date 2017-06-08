@@ -27,6 +27,11 @@ class Admin
         add_action('admin_enqueue_scripts', [__CLASS__, 'admin_scripts']);
     }
 
+    /**
+     * Load scripts.
+     *
+     * @param $hook
+     */
     static function admin_scripts($hook)
     {
 
@@ -72,14 +77,19 @@ class Admin
         add_submenu_page(static::$page_slug, 'Events Synchronizer', 'Sync', 'manage_options', 'events-sync', [__CLASS__, 'settings_page']);
     }
 
+    /**
+     * Render settings page.
+     */
     static function settings_page()
     {
         ?>
 
         <div class="wrap" id="eventsSync">
 
-            <h1>Events Synchronizer</h1>
+            <h1>Events Synchronization</h1>
             <?php settings_errors(); ?>
+
+            <hr>
 
             <form method="post" action="options.php">
 
@@ -95,6 +105,8 @@ class Admin
                 ?>
 
             </form>
+
+            <hr>
 
         </div>
 
@@ -115,7 +127,7 @@ class Admin
                name="wisvch_events_sync[wisvch_events_sync-ch_connect_url]"
                value="<?php echo esc_url($args['value']); ?>">
 
-        <button type="button" id="checkConnection" class="button button-secondary"><span class="label">Test</span><span class="spinner"></span></button>
+        <button type="button" id="checkConnection" class="button button-secondary"><span class="label">Test</span><span class="spinner" style="display:none;"></span></button>
         <?php
     }
 
