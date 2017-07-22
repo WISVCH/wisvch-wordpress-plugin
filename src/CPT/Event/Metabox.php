@@ -11,8 +11,28 @@ class Metabox
 {
     public function init()
     {
+        add_action('admin_enqueue_scripts', [$this, 'load_assets']);
+
         add_action('add_meta_boxes', [$this, 'meta_boxes']);
         add_action('save_post', [$this, 'save_meta_boxes'], 10, 2);
+    }
+
+    public function load_assets($hook)
+    {
+
+        if (in_array($hook, ['post.php', 'post-new.php'])) {
+            $screen = get_current_screen();
+
+            if (is_object($screen) && 'event' === $screen->post_type) {
+
+                // Flatpickr assets
+                wp_enqueue_script('flatpickr', plugins_url('/assets/vendor/flatpickr/dist/flatpickr.min.js', WISVCH_ASSET_BASE), [], null, true);
+                wp_enqueue_style('flatpickr', plugins_url('/assets/vendor/flatpickr/dist/flatpickr.min.css', WISVCH_ASSET_BASE), [], null);
+
+                // Custom Events metabox JS
+                wp_enqueue_script('cpt-events-metabox', plugins_url('/assets/cpt/event/metabox.js', WISVCH_ASSET_BASE), ['jquery'], null, true);
+            }
+        }
     }
 
     /**
@@ -50,16 +70,21 @@ class Metabox
                    value="<?=esc_attr($location);?>">
         </p>
 
-        <p>
+        <p class="flatpickr-hide">
             <b><label for="_event_start_date">Starting time</label></b>
             <input type="datetime-local" name="_event_start_date" class="widefat" id="_event_start_date"
                    value="<?=esc_attr($start);?>">
         </p>
 
-        <p>
+        <p class="flatpickr-hide">
             <b><label for="_event_end_date">Ending time</label></b>
             <input type="datetime-local" name="_event_end_date" class="widefat" id="_event_end_date"
                    value="<?=esc_attr($end);?>">
+        </p>
+
+        <p id="_event_date_range_wrapper" style="display:none;">
+            <b><label for="_event_end_date">Date &amp; time:</label></b>
+            <input type="datetime-local" class="widefat" id="_event_date_range">
         </p>
 
         <p>
