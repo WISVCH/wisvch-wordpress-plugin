@@ -52,6 +52,7 @@ class Registration {
 		$supports = array(
 			'title',
 			'editor',
+			'excerpt',
 			'revisions',
 		);
 
@@ -108,7 +109,7 @@ class Registration {
 			'show_ui'           => true,
 			'show_tagcloud'     => true,
 			'hierarchical'      => true,
-			'rewrite'           => array( 'slug' => 'job-opening-type' ),
+			'rewrite'           => array( 'slug' => '/career/job-type' ),
 			'show_admin_column' => true,
 			'query_var'         => true,
 		);
@@ -153,7 +154,7 @@ class Registration {
 			'show_ui'           => true,
 			'show_tagcloud'     => true,
 			'hierarchical'      => true,
-			'rewrite'           => array( 'slug' => 'job-opening-study' ),
+			'rewrite'           => array( 'slug' => 'career/study', 'with_front' => false ),
 			'show_admin_column' => true,
 			'query_var'         => true,
 		);
