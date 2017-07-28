@@ -37,6 +37,9 @@ class Init
 
         // Initialize API
         Api::register_hooks();
+
+        // Initialize feed
+        Feed::register_hooks();
     }
 
     /**

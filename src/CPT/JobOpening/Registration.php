@@ -109,7 +109,7 @@ class Registration {
 			'show_ui'           => true,
 			'show_tagcloud'     => true,
 			'hierarchical'      => true,
-			'rewrite'           => array( 'slug' => '/career/job-type' ),
+			'rewrite'           => array( 'slug' => 'career/job-type' ),
 			'show_admin_column' => true,
 			'query_var'         => true,
 		);
