@@ -72,7 +72,7 @@ class Registration
             'menu_icon' => 'dashicons-calendar',
             'show_in_rest' => true,
             'rest_base' => 'events',
-            'rest_controller_class'
+            'rest_controller_class',
         ];
 
         $args = apply_filters('events_post_type_args', $args);
@@ -108,7 +108,10 @@ class Registration
             'show_ui' => true,
             'show_tagcloud' => true,
             'hierarchical' => true,
-            'rewrite' => ['slug' => 'event-category'],
+            'rewrite' => [
+                'slug' => 'activities/event-category',
+                'with_front' => false,
+            ],
             'show_admin_column' => true,
             'query_var' => true,
         ];

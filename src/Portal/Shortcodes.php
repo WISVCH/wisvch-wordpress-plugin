@@ -25,6 +25,7 @@ class Shortcodes
         foreach ($shortcodes as $shortcode => $function) {
             add_shortcode($shortcode, $function);
         }
+
     }
 
     /**
@@ -44,6 +45,7 @@ class Shortcodes
             'after' => null,
         ]
     ) {
+
         ob_start();
 
         echo empty($wrapper['before']) ? '<div class="'.esc_attr($wrapper['class']).'">' : $wrapper['before'];

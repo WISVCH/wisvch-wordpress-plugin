@@ -116,7 +116,7 @@ class Profile extends Template
         }
 
         // Check if logged in
-        if (Shortcodes::check_auth()) {
+        if (!Shortcodes::check_auth()) {
             return "<h5>Error</h5><p>You are not logged in.</p>";
         }
 

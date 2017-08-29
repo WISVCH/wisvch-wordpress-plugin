@@ -9,6 +9,10 @@ namespace WISVCH\Portal;
  */
 class Member
 {
+    const ADMINISTRATOR_LDAP_GROUPS = ['w3cie'];
+
+    const EDITOR_LDAP_GROUPS = ['website'];
+
     /**
      * Hook into WordPress.
      */
@@ -23,8 +27,14 @@ class Member
         // Process CH Connect log-ins
         add_action('openid-connect-generic-user-create', [__CLASS__, 'ch_connect_user_creation'], 10, 2);
 
+        // Update user metadata if necessary
+        add_action('openid-connect-generic-update-user-using-current-claim', [__CLASS__, 'ch_connect_user_claim_update'], 10, 2);
+
         // Store last login data
         add_action('wp_login', [__CLASS__, 'set_last_login']);
+
+        // Check claim for different or new information
+        add_action('wp_login', [__CLASS__, 'check_claim']);
     }
 
     /**
@@ -32,17 +42,58 @@ class Member
      *
      * @param $user
      */
-    static function ch_connect_user_creation($user)
+    static function ch_connect_user_creation(\WP_User $user, $user_claim)
     {
 
-        if (is_a($user, 'WP_User')) {
 
-            // Change role to ch_member
-            wp_update_user([
-                'ID' => $user->ID,
-                'role' => 'ch_member',
-            ]);
+        // Change role to ch_member
+        wp_update_user([
+            'ID' => $user->ID,
+            'role' => 'ch_member',
+        ]);
+
+        // Update user meta with user claim data
+        self::ch_connect_user_claim_update($user, $user_claim);
+    }
+
+    static function ch_connect_user_claim_update(\WP_User $user, $claim)
+    {
+
+        // Skip function if no LDAP group access provided by user
+        if (! isset($claim['ldap_groups']) || ! is_array($claim['ldap_groups'])) {
+            return;
         }
+
+        // Administrator
+        if (count(array_intersect(self::ADMINISTRATOR_LDAP_GROUPS, $claim['ldap_groups'])) > 0) {
+
+            // Add
+            if (! $user->has_role('administrator')) {
+                $user->add_role('administrator');
+            }
+        } else {
+
+            // Remove
+            if ($user->has_role('administrator')) {
+                $user->remove_role('administrator');
+            }
+        }
+
+        // Editor
+        if (count(array_intersect(self::EDITOR_LDAP_GROUPS, $claim['ldap_groups'])) > 0) {
+
+            // Add
+            if (! $user->has_role('editor')) {
+                $user->add_role('editor');
+            }
+        } else {
+
+            // Remove
+            if ($user->has_role('editor')) {
+                $user->remove_role('editor');
+            }
+        }
+
     }
 
     /**
@@ -101,7 +152,7 @@ class Member
     static function admin_init()
     {
 
-        if (!(defined('DOING_AJAX') && DOING_AJAX) && self::_is_ch_member_exclusively()) {
+        if (! (defined('DOING_AJAX') && DOING_AJAX) && self::_is_ch_member_exclusively()) {
 
             // Redirect to user portal
             wp_redirect(Init::getUrl());
@@ -134,11 +185,29 @@ class Member
         update_user_meta($user->ID, 'last_login', current_time('mysql', true));
     }
 
-    static function get_user_claim()
+    /**
+     * Check CH Connect claim for new or different information.
+     *
+     * @param $login
+     */
+    static function check_claim($login)
     {
 
-        // Get current user
-        $user = wp_get_current_user();
+        $claim = self::get_user_claim();
+        // @TODO: update role (admin)
+    }
+
+    /**
+     * @todo Make singleton.
+     */
+    static function get_user_claim(\WP_User $user = null)
+    {
+
+        if (empty($user)) {
+
+            // Get current user
+            $user = wp_get_current_user();
+        }
 
         // Load user claim
         $claim = get_user_meta($user->ID, 'openid-connect-generic-last-user-claim', true);
