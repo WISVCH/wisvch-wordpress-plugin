@@ -28,6 +28,10 @@ class Init
         // Initialize registrations for post-activation requests.
         $registration->init();
 
+        // Initialize metaboxes
+        $metaboxes = new Metabox;
+        $metaboxes->init();
+
         if (is_admin()) {
 
             $admin = new Admin($registration);
