@@ -27,7 +27,7 @@ class Profile extends Template
 
         $return_data = parent::getTemplateData();
 
-        $return_data['ch_member'] = Member::_is_ch_member_exclusively();
+        $return_data['ch_member'] = Member::_is_ch_member();
 
         // Get CH Connect data
         $return_data['ch_connect'] = Member::get_user_claim();

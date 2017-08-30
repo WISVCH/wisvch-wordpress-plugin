@@ -32,25 +32,19 @@ class Member
 
         // Store last login data
         add_action('wp_login', [__CLASS__, 'set_last_login']);
-
-        // Check claim for different or new information
-        add_action('wp_login', [__CLASS__, 'check_claim']);
     }
 
     /**
      * Change WP_User role to `ch_member`.
      *
      * @param $user
+     * @param $user_claim
      */
     static function ch_connect_user_creation(\WP_User $user, $user_claim)
     {
 
-
-        // Change role to ch_member
-        wp_update_user([
-            'ID' => $user->ID,
-            'role' => 'ch_member',
-        ]);
+        // Add role `ch_member`
+        $user->add_role('ch_member');
 
         // Update user meta with user claim data
         self::ch_connect_user_claim_update($user, $user_claim);
@@ -93,7 +87,6 @@ class Member
                 $user->remove_role('editor');
             }
         }
-
     }
 
     /**
@@ -147,6 +140,26 @@ class Member
     }
 
     /**
+     * Check if a user has role `ch_member`.
+     *
+     * @return bool
+     */
+    static function _is_ch_member()
+    {
+        // Get current user
+        $user = wp_get_current_user();
+
+        /**
+         * @see is_user_logged_in()
+         */
+        if ($user->exists()) {
+            return count($user->roles) > 0 && in_array('ch_member', $user->roles);
+        }
+
+        return false;
+    }
+
+    /**
      * Dashboard redirect.
      */
     static function admin_init()
@@ -183,18 +196,6 @@ class Member
 
         //add or update the last login value for logged in user
         update_user_meta($user->ID, 'last_login', current_time('mysql', true));
-    }
-
-    /**
-     * Check CH Connect claim for new or different information.
-     *
-     * @param $login
-     */
-    static function check_claim($login)
-    {
-
-        $claim = self::get_user_claim();
-        // @TODO: update role (admin)
     }
 
     /**
