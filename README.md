@@ -7,9 +7,12 @@ WordPress plugin for W.I.S.V. 'Christiaan Huygens', carefully crafted by the W3C
 
 1. [Install WordPress](https://codex.wordpress.org/Installing_WordPress)
 2. Clone this repository inside `wp-content/plugins`
-3. [Log into WordPress](https://codex.wordpress.org/First_Steps_With_WordPress), go to `Plugins > Installed Plugins` and activate `	
+3. Install dependencies of this repo via `bower install`
+4. [Log into WordPress](https://codex.wordpress.org/First_Steps_With_WordPress), go to `Plugins > Installed Plugins` 
+and activate `	
 WISVCH WordPress Enhancements`.
-4. Start coding!
+
+5. Start coding!
 
 ## Usage
 

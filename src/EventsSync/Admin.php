@@ -151,7 +151,7 @@ class Admin
      * Validate settings inputs.
      *
      * @param $input
-     * @return mixed|void
+     * @return mixed
      */
     static function validate_input($input)
     {
