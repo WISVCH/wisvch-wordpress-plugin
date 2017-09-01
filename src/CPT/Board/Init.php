@@ -32,6 +32,9 @@ class Init
         $metaboxes = new Metabox;
         $metaboxes->init();
 
+        // Init query modifications
+        Query::register_hooks();
+
         if (is_admin()) {
 
             $admin = new Admin($registration);

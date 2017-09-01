@@ -28,6 +28,9 @@ class Init
         // Initialize registrations for post-activation requests.
         $registration->init();
 
+        // Init query modifications
+        Query::register_hooks();
+
         if (is_admin()) {
 
             $admin = new Admin($registration);
