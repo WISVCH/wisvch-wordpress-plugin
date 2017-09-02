@@ -62,6 +62,9 @@ class WISVCH_Plugin
         // Init Events Synchronizer
         new EventsSync\Init();
 
+        // Init shortcodes
+        new Shortcodes\Init();
+
         // Add separator to admin menu
         add_action('admin_init', [$this, 'add_admin_menu_separator']);
     }
