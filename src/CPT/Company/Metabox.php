@@ -20,7 +20,7 @@ class Metabox
      */
     public function meta_boxes()
     {
-        add_meta_box('company_details', 'Company Details', [$this, 'render_meta_boxes'], 'company', 'advanced', 'default');
+        add_meta_box('company_details', 'Company Details', [$this, 'render_meta_boxes'], 'company', 'advanced', 'high');
     }
 
     /**

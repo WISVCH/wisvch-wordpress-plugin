@@ -93,7 +93,7 @@ class Api
 
         // Validate dates
         if (empty($start) || empty($end)) {
-            return new \WP_Error('wisvch_plugin_fullcalendar_no_dates', 'No start or end date speficied.', ['status' => 500]);
+            return new \WP_Error('wisvch_plugin_fullcalendar_no_dates', 'No start or end date specified.', ['status' => 500]);
         }
 
         // Get events within calendar interval

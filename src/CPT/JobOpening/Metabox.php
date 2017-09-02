@@ -45,7 +45,8 @@ class Metabox
             $companies = get_posts([
                 'post_type' => 'company',
                 'orderby' => 'post_name',
-                'order' => 'ASC'
+                'order' => 'ASC',
+                'posts_per_page' => -1,
             ]);
 
             if (count($companies) > 0) {
