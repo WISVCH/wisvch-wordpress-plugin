@@ -35,13 +35,31 @@ class Metabox
         $email = ! isset($meta['_company_email'][0]) ? '' : $meta['_company_email'][0];
         $website = ! isset($meta['_company_website'][0]) ? '' : $meta['_company_website'][0];
         $linkto = ! isset($meta['_link_to'][0]) ? '' : $meta['_link_to'][0];
+        $partnerlink = ! isset($meta['_company_partnerlink'][0]) ? '' : $meta['_company_partnerlink'][0];
 
         wp_nonce_field(basename(__FILE__), 'company_fields');
 
         // @TODO move inline css to separate file (or use default WP admin CSS)
         ?>
 
-        <div style="width:50%; float:left; box-sizing:border-box;padding-right:1rem;">
+        <style>
+            #postbox-container-1 .metabox-col {
+                width: 100%;
+                float: none;
+            }
+
+            #postbox-container-2 .metabox-col {
+                width: 50%;
+                float: left;
+                box-sizing: border-box;
+            }
+
+            #postbox-container-2 .metabox-col2 {
+                padding-left: 2rem;
+            }
+        </style>
+
+        <div class="metabox-col metabox-col1" style="">
 
             <p>
                 <b><label>Address</label></b><br>
@@ -53,13 +71,13 @@ class Metabox
                 <input type="text" name="_company_phone" class="widefat" value="<?php echo esc_attr($phone); ?>">
             </p>
 
-        </div>
-        <div style="width:50%; float:left;box-sizing:border-box;padding-left:1rem;">
-
             <p>
                 <b><label>Email Address</label></b><br>
                 <input type="text" name="_company_email" class="widefat" value="<?php echo esc_attr($email); ?>">
             </p>
+
+        </div>
+        <div class="metabox-col metabox-col2">
 
             <p>
                 <b><label>Website URL</label></b><br>
@@ -72,6 +90,10 @@ class Metabox
                     <option value="url" <?php selected($linkto, "url"); ?>>Website</option>
                     <option value="post" <?php selected($linkto, "post"); ?>>Company Profile</option>
                 </select>
+            </p>
+
+            <p>
+                <b><label>Partnerlink enabled? <input type="checkbox" name="_company_partnerlink" value="true" <?php checked($partnerlink, "true"); ?>></label></b>
             </p>
         </div>
 
@@ -118,6 +140,13 @@ class Metabox
 
         foreach ($meta as $key => $value) {
             update_post_meta($post->ID, $key, $value);
+        }
+
+        // Process partnerlink
+        if (isset($_POST['_company_partnerlink']) && $_POST['_company_partnerlink'] === "true") {
+            update_post_meta($post->ID, "_company_partnerlink", "true");
+        } else {
+            delete_post_meta($post->ID, "_company_partnerlink");
         }
     }
 }
