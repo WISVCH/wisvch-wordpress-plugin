@@ -67,6 +67,9 @@ class WISVCH_Plugin
 
         // Add separator to admin menu
         add_action('admin_init', [$this, 'add_admin_menu_separator']);
+
+        register_activation_hook(__FILE__, [__CLASS__, 'activate']);
+        register_deactivation_hook(__FILE__, [__CLASS__, 'deactivate']);
     }
 
     /**
@@ -140,6 +143,3 @@ class WISVCH_Plugin
 }
 
 new WISVCH_Plugin();
-
-register_activation_hook(__FILE__, 'WISVCH_Plugin::activate');
-register_deactivation_hook(__FILE__, 'WISVCH_Plugin::deactivate');
