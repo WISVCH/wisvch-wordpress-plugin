@@ -118,7 +118,7 @@ class WISVCH_Plugin
     {
 
         // Create custom roles.
-        if (! \WISVCH\Portal\User::register_role()) {
+        if (! \WISVCH\Portal\Member::register_role()) {
             wp_die("Could not register custom CH Member role.", "Fatal error", ['back_link' => true]);
         }
 
@@ -140,3 +140,6 @@ class WISVCH_Plugin
 }
 
 new WISVCH_Plugin();
+
+register_activation_hook(__FILE__, 'WISVCH_Plugin::activate');
+register_deactivation_hook(__FILE__, 'WISVCH_Plugin::deactivate');
