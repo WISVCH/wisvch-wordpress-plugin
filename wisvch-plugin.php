@@ -59,6 +59,9 @@ class WISVCH_Plugin
         // Init Portal
         new Portal\Init();
 
+        // Init CHoice
+        new CHoice\Init();
+
         // Init Events Synchronizer
         new EventsSync\Init();
 
