@@ -23,7 +23,7 @@ class Query
     static function archive_order($query)
     {
 
-        if ($query->is_main_query() && $query->is_post_type_archive('honorary_member')) {
+        if (! $query->is_admin && $query->is_main_query() && $query->is_post_type_archive('honorary_member')) {
 
             $query->set('order', 'ASC');
             $query->set('orderby', 'menu_order');

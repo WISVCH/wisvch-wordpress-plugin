@@ -28,17 +28,13 @@ class Init
         // Initialize registrations for post-activation requests.
         $registration->init();
 
-        // Initialize metaboxes
-        $metaboxes = new Metabox;
-        $metaboxes->init();
-
         // Init query modifications
         Query::register_hooks();
 
         if (is_admin()) {
 
-            $admin = new Admin($registration);
-            $admin->init();
+            new Admin($registration);
+            new Metabox();
         }
     }
 

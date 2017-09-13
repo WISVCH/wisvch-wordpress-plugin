@@ -9,7 +9,7 @@ namespace WISVCH\CPT\Company;
  */
 class Metabox
 {
-    public function init()
+    function __construct()
     {
         add_action('add_meta_boxes', [$this, 'meta_boxes']);
         add_action('save_post', [$this, 'save_meta_boxes'], 10, 2);
@@ -18,7 +18,7 @@ class Metabox
     /**
      * Register the metaboxes to be used for the company post type
      */
-    public function meta_boxes()
+    function meta_boxes()
     {
         add_meta_box('company_details', 'Company Details', [$this, 'render_meta_boxes'], 'company', 'advanced', 'high');
     }

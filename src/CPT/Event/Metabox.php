@@ -9,7 +9,7 @@ namespace WISVCH\CPT\Event;
  */
 class Metabox
 {
-    public function init()
+    function __construct()
     {
         add_action('admin_enqueue_scripts', [$this, 'load_assets']);
 
@@ -17,7 +17,7 @@ class Metabox
         add_action('save_post', [$this, 'save_meta_boxes'], 10, 2);
     }
 
-    public function load_assets($hook)
+    function load_assets($hook)
     {
 
         if (in_array($hook, ['post.php', 'post-new.php'])) {
@@ -38,7 +38,7 @@ class Metabox
     /**
      * Register the metaboxes to be used for the team post type
      */
-    public function meta_boxes()
+    function meta_boxes()
     {
         add_meta_box('events_details', 'Events Details', [$this, 'render_meta_boxes'], 'event', 'normal', 'high');
     }

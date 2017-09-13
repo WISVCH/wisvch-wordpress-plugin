@@ -32,9 +32,7 @@ class Init
         Query::register_hooks();
 
         if (is_admin()) {
-
-            $admin = new Admin($registration);
-            $admin->init();
+            new Admin($registration);
         }
     }
 

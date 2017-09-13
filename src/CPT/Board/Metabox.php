@@ -9,7 +9,9 @@ namespace WISVCH\CPT\Board;
  */
 class Metabox
 {
-    public function init()
+    private $_meta;
+
+    function __construct()
     {
         add_action('add_meta_boxes', [$this, 'meta_boxes']);
         add_action('save_post', [$this, 'save_meta_boxes'], 10, 2);
@@ -18,28 +20,27 @@ class Metabox
     /**
      * Register the metaboxes to be used for the board post type
      */
-    public function meta_boxes()
+    function meta_boxes()
     {
-        add_meta_box('board_details', 'Board Details', [$this, 'render_meta_boxes'], 'board', 'side', 'high');
+        add_meta_box('board_details', 'Board Details', [$this, 'render_board_details'], 'board', 'side', 'high');
     }
 
     /**
-     * The HTML for the fields
+     * Board details metabox.
      */
-    function render_meta_boxes($post)
+    function render_board_details($post)
     {
 
-        $meta = get_post_custom($post->ID);
-        $year = ! isset($meta['_board_year'][0]) ? '' : $meta['_board_year'][0];
+        $meta = $this->_getMeta($post);
+        $year = $this->_getMetaEntry($meta, '_board_year') ?? '';
 
-        wp_nonce_field(basename(__FILE__), 'board_fields');
+        wp_nonce_field(basename(__FILE__), 'board_details');
         ?>
 
         <p>
             <b><label>Year</label></b><br>
             <input type="text" name="_board_year" class="widefat" placeholder="e.g. 2015 / 2016" value="<?php echo esc_attr($year); ?>">
         </p>
-
 
     <?php }
 
@@ -51,8 +52,8 @@ class Metabox
 
         global $post;
 
-        // Verify nonce
-        if (! isset($_POST['board_fields']) || ! wp_verify_nonce($_POST['board_fields'], basename(__FILE__))) {
+        // Verify nonces
+        if (! isset($_POST['board_details']) || ! wp_verify_nonce($_POST['board_details'], basename(__FILE__))) {
             return $post_id;
         }
 
@@ -76,5 +77,43 @@ class Metabox
         foreach ($meta as $key => $value) {
             update_post_meta($post->ID, $key, $value);
         }
+    }
+
+    /**
+     * Retrieve and store post meta.
+     *
+     * @param WP_Post $post Post object.
+     * @return array Metadata.
+     */
+    private function _getMeta($post)
+    {
+
+        if (! isset($this->_meta)) {
+            $this->_meta = get_post_custom($post->ID);
+        }
+
+        return $this->_meta;;
+    }
+
+    /**
+     * Get entry from post meta.
+     *
+     * @param array $meta Metadata object.
+     * @param string $name Entry key.
+     * @param bool $single Whether to return all values for key (array) or just the first.
+     * @return mixed Meta value on success, false on failure.
+     */
+    private function _getMetaEntry($meta, $name, $single = true)
+    {
+
+        if ($single === true && isset($meta[$name][0])) {
+            return $meta[$name][0];
+        }
+
+        if ($single !== true && isset($meta[$name])) {
+            return $meta[$name];
+        }
+
+        return false;
     }
 }

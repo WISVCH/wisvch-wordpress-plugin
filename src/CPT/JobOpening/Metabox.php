@@ -9,7 +9,7 @@ namespace WISVCH\CPT\JobOpening;
  */
 class Metabox
 {
-    public function init()
+    function __construct()
     {
         add_action('add_meta_boxes', [$this, 'meta_boxes']);
         add_action('save_post', [$this, 'save_meta_boxes'], 10, 2);
@@ -17,8 +17,6 @@ class Metabox
 
     /**
      * Register the metaboxes to be used for the team post type
-     *
-     * @since 0.1.0
      */
     public function meta_boxes()
     {
@@ -27,8 +25,6 @@ class Metabox
 
     /**
      * The HTML for the fields
-     *
-     * @since 0.1.0
      */
     function render_meta_boxes($post)
     {
@@ -77,8 +73,6 @@ class Metabox
 
     /**
      * Save metaboxes
-     *
-     * @since 0.1.0
      */
     function save_meta_boxes($post_id)
     {

@@ -116,7 +116,7 @@ class Profile extends Template
         }
 
         // Check if logged in
-        if (!Shortcodes::check_auth()) {
+        if (! Shortcodes::check_auth()) {
             return "<h5>Error</h5><p>You are not logged in.</p>";
         }
 
@@ -151,7 +151,7 @@ class Profile extends Template
             $email_contents = self::_buildEmail($updates, $ch_connect);
 
             // @TODO: replace svenh with w3cie
-            $mail_sent = wp_mail(WP_DEBUG ? "svenh@ch.tudelft.nl" : "secretary@ch.tudelft.nl", "Verzoek wijziging ledenadministratie", $email_contents);
+            $mail_sent = wp_mail(! WP_DEBUG ? "svenh@ch.tudelft.nl" : "secretary@ch.tudelft.nl", "Verzoek wijziging ledenadministratie", $email_contents);
 
             if ($mail_sent) {
                 return '<h5>Success</h5><p>Changes submitted successfully. The secretary will update your information as soon as possible.</p>';
@@ -175,10 +175,10 @@ class Profile extends Template
 
         $user = wp_get_current_user();
 
-        $output = "Waarde secretaris,\n\n";
-        $output .= "Er is via de website een verzoek om de ledenadministratie aan te passen ingediend.\n\n";
+        $output = "Beste secretaris,\n\n";
+        $output .= "Er is een nieuwe adreswijziging via de website ingediend.\n\n";
         $output .= "Datum: ".date_i18n('Y-m-d H:i:s')."\n";
-        $output .= "Gebruiker: ".sanitize_text_field($user->user_login)." (".sanitize_text_field($userdata['sub']).")\n\n";
+        $output .= "Gebruiker: ".sanitize_text_field($user->user_login)." (ID: ".sanitize_text_field($userdata['sub']).")\n\n";
         $output .= "Wijzigingen:\n\n";
 
         $output .= "=====\n\n";
