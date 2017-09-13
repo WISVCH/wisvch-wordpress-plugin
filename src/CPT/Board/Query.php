@@ -46,7 +46,7 @@ class Query
         if ($q_cond) {
 
             if ($query->get('order') === '') {
-                $query->set('order', 'asc');
+                $query->set('order', 'desc');
             }
 
             if ($query->get('orderby') === '') {
