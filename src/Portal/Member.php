@@ -44,7 +44,7 @@ class Member
     {
 
         // Add role `ch_member`
-        $user->add_role('ch_member');
+        $user->set_role('ch_member');
 
         // Update user meta with user claim data
         self::ch_connect_user_claim_update($user, $user_claim);
@@ -178,6 +178,7 @@ class Member
      */
     static function init()
     {
+
         if (self::_is_ch_member_exclusively()) {
 
             // Disable admin bar.

@@ -123,7 +123,6 @@ class Profile extends Template
         $inputs = [
             'user_name' => 'Full Name',
             'user_given_name' => 'Given Name',
-            'user_gender' => 'Gender',
             'user_birthdate' => 'Birth Date',
             'user_email' => 'Email Address',
             'user_phone' => 'Phone',
