@@ -125,13 +125,11 @@ class Admin
 </thead>
 <tbody>
 <tr>
-<td>Chief Commissioner of
-Public Relations</td>
+<td>Public Relations</td>
 <td><strong>Name</strong></td>
 </tr>
 <tr>
-<td>Chief Commissioner of
-Applied Mathematics Education</td>
+<td>Applied Mathematics Education Affairs</td>
 <td><strong>Name</strong></td>
 </tr>
 <tr>
@@ -147,13 +145,11 @@ Applied Mathematics Education</td>
 <td><strong>Name</strong></td>
 </tr>
 <tr>
-<td>Chief Commissioner of
-Computer Science Education</td>
+<td>Computer Science Education Affairs</td>
 <td><strong>Name</strong></td>
 </tr>
 <tr>
-<td>Chief Commissioner of
-Career Affairs</td>
+<td>Career Affairs</td>
 <td><strong>Name</strong></td>
 </tr>
 </tbody>

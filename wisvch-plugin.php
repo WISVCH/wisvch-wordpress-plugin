@@ -65,6 +65,9 @@ class WISVCH_Plugin
         // Init shortcodes
         new Shortcodes\Init();
 
+        // Register widgets
+        new Widgets\Init();
+
         // Add separator to admin menu
         add_action('admin_init', [$this, 'add_admin_menu_separator']);
 
