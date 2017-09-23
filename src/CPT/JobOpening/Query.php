@@ -25,22 +25,28 @@ class Query
     static function job_opening_query(\WP_Query $query)
     {
 
-        if (! $query->is_admin && $query->is_main_query() && $query->get('post_type', false) === 'job_opening') {
+        if (! $query->is_admin && $query->is_main_query()) {
 
-            // All job openings depend on company
-            $query->set('meta_query', [
-                [
-                    'key' => '_company_id',
-                    'value' => static::_get_active_companies(),
-                    'compare' => 'IN',
-                ],
-            ]);
+            if ($query->get('post_type', false) === 'job_opening') {
 
-            // Randomize archives
-            if ($query->is_post_type_archive()) {
+                // All job openings depend on company
+                $query->set('meta_query', [
+                    [
+                        'key' => '_company_id',
+                        'value' => static::_get_active_companies(),
+                        'compare' => 'IN',
+                    ],
+                ]);
 
-                $query->set('orderby', 'rand');
-                $query->set('posts_per_page', -1);
+                // Randomize archives
+                if ($query->is_post_type_archive()) {
+
+                    $query->set('orderby', 'rand');
+                    $query->set('posts_per_page', -1);
+                }
+            } elseif ($query->is_tax(['job_study', 'job_type'])) {
+                $query->set_404();
+                status_header(404);
             }
         }
 

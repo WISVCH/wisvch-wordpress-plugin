@@ -19,9 +19,6 @@ class Registration
 
     /**
      * Initiate registrations of post type and taxonomies.
-     *
-     * @uses Team_Post_Type_Registrations::register_post_type()
-     * @uses Team_Post_Type_Registrations::register_taxonomy_category()
      */
     public function register()
     {
@@ -36,16 +33,16 @@ class Registration
     protected function register_post_type()
     {
         $labels = [
-            'name' => __('Committees', 'team-post-type'),
-            'singular_name' => __('Committee', 'team-post-type'),
-            'add_new' => __('Add Committee', 'team-post-type'),
-            'add_new_item' => __('Add Committee', 'team-post-type'),
-            'edit_item' => __('Edit Committee', 'team-post-type'),
-            'new_item' => __('New Committee', 'team-post-type'),
-            'view_item' => __('View Committee', 'team-post-type'),
-            'search_items' => __('Search Committees', 'team-post-type'),
-            'not_found' => __('No committees found', 'team-post-type'),
-            'not_found_in_trash' => __('No committees in the trash', 'team-post-type'),
+            'name' => 'Committees',
+            'singular_name' => 'Committee',
+            'add_new' => 'Add Committee',
+            'add_new_item' => 'Add Committee',
+            'edit_item' => 'Edit Committee',
+            'new_item' => 'New Committee',
+            'view_item' => 'View Committee',
+            'search_items' => 'Search Committees',
+            'not_found' => 'No committees found',
+            'not_found_in_trash' => 'No committees in the trash',
         ];
 
         $supports = [

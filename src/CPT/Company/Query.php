@@ -15,19 +15,25 @@ class Query
     static function register_hooks()
     {
         add_action('posts_orderby', [__CLASS__, 'admin_order'], 100, 2);
-        add_action('pre_get_posts', [__CLASS__, 'randomize_archive']);
+        add_action('pre_get_posts', [__CLASS__, 'company_queries']);
     }
 
     /**
      * Alter main query.
      */
-    static function randomize_archive($query)
+    static function company_queries(\WP_Query $query)
     {
 
-        if (! $query->is_admin && $query->is_main_query() && $query->is_post_type_archive('company')) {
+        if (! $query->is_admin && $query->is_main_query()) {
 
-            $query->set('orderby', 'rand');
-            $query->set('posts_per_page', -1);
+            if ($query->is_post_type_archive('company')) {
+
+                $query->set('orderby', 'rand');
+                $query->set('posts_per_page', -1);
+            } elseif ($query->is_tax(['company_study', 'company_offerings'])) {
+                $query->set_404();
+                status_header(404);
+            }
         }
 
         return $query;
