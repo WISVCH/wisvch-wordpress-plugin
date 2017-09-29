@@ -2,7 +2,10 @@
 
 namespace WISVCH\EventsSync;
 
+use function get_tag;
+use function strtolower;
 use WP_REST_Request;
+use function add_post_meta;
 use function vsprintf;
 use function wp_delete_post;
 use function wp_update_post;
@@ -41,7 +44,7 @@ class Sync
         try {
             switch ($trigger) {
                 case 'EVENT_CREATE_UPDATE':
-                    self::determine_create_or_update($json_body);
+                    self::determine_create_or_update_event($json_body);
                     break;
                 case 'EVENT_DELETE':
                     self::delete_event($json_body);
@@ -59,38 +62,31 @@ class Sync
     }
 
     /**
-     * Function create_event
+     * Function determine_create_or_update
      *
-     * @param array $parsed_json_body
+     * @param $json_body
      *
      * @return void
      */
-    static function create_event(array $parsed_json_body)
+    static function determine_create_or_update_event($json_body): void
     {
-        $post_args = self::generate_post_args($parsed_json_body);
-        $post_id = wp_insert_post($post_args);
-
-        add_post_meta($post_id, '_ch_events_key', $parsed_json_body['key']);
-        add_post_meta($post_id, '_event_short_description', $parsed_json_body['short_description']);
-        add_post_meta($post_id, '_event_location', $parsed_json_body['location']);
-        add_post_meta($post_id, '_event_start_date', $parsed_json_body['event_start']);
-        add_post_meta($post_id, '_event_end_date', $parsed_json_body['event_end']);
-
-        add_post_meta($post_id, '_event_cost', 0); // TODO: change to real value.
-
-        // TODO: set event image.
+        if (self::should_create_event($json_body)) {
+            self::create_event($json_body);
+        } else {
+            self::update_event($json_body);
+        }
     }
 
     /**
      * Function assert_should_create_event
      *
-     * @param array $parsed_json_body
+     * @param array $product_array
      *
      * @return bool
      */
-    static function should_create_event(array $parsed_json_body): bool
+    static function should_create_event(array $product_array): bool
     {
-        return is_null(self::get_event_by_events_key($parsed_json_body['key']));
+        return is_null(self::get_event_by_events_key($product_array['key']));
     }
 
     /**
@@ -111,7 +107,7 @@ class Sync
 
         if (count($posts) > 1) {
             throw new WISVCHException(self::EXCEPTION_MULTIPLE_SAME_EVENT_EXISTS);
-        } else if (count($posts) === 0) {
+        } elseif (count($posts) === 0) {
             return null;
         } else {
             return $posts[0];
@@ -119,56 +115,65 @@ class Sync
     }
 
     /**
-     * Function determine_create_or_update
+     * Function create_event
      *
-     * @param $json_body
+     * @param array $event_array
      *
      * @return void
      */
-    static function determine_create_or_update($json_body): void
+    static function create_event(array $event_array)
     {
-        if (self::should_create_event($json_body)) {
-            self::create_event($json_body);
-        } else {
-            self::update_event($json_body);
-        }
+        $post_args = self::generate_post_args_event($event_array);
+        $post_id = wp_insert_post($post_args);
+        self::set_event_categories($event_array, $post_id);
+
+        add_post_meta($post_id, '_ch_events_key', $event_array['key']);
+        add_post_meta($post_id, '_event_short_description', $event_array['short_description']);
+        add_post_meta($post_id, '_event_location', $event_array['location']);
+        add_post_meta($post_id, '_event_start_date', $event_array['event_start']);
+        add_post_meta($post_id, '_event_end_date', $event_array['event_end']);
+
+        $product_post_array = self::set_event_products($event_array);
+        add_post_meta($post_id, '_event_product_post_array', $product_post_array);
     }
 
     /**
      * Function update_event
      *
-     * @param array $parsed_json_body
+     * @param array $event_array
      *
      * @return void
      */
-    static function update_event(array $parsed_json_body)
+    static function update_event(array $event_array)
     {
-        $ch_events_key = $parsed_json_body['key'];
+        $ch_events_key = $event_array['key'];
         $post = self::get_event_by_events_key($ch_events_key);
         $post_id = $post->ID;
 
-        $post_args = self::generate_post_args($parsed_json_body);
+        $post_args = self::generate_post_args_event($event_array);
         $post_args['ID'] = $post_id;
         wp_update_post($post_args);
+        self::set_event_categories($event_array, $post_id);
 
-        update_post_meta($post_id, '_event_short_description', $parsed_json_body['short_description']);
-        update_post_meta($post_id, '_event_location', $parsed_json_body['location']);
-        update_post_meta($post_id, '_event_start_date', $parsed_json_body['event_start']);
-        update_post_meta($post_id, '_event_end_date', $parsed_json_body['event_end']);
+        update_post_meta($post_id, '_event_short_description', $event_array['short_description']);
+        update_post_meta($post_id, '_event_location', $event_array['location']);
+        update_post_meta($post_id, '_event_start_date', $event_array['event_start']);
+        update_post_meta($post_id, '_event_end_date', $event_array['event_end']);
 
-        update_post_meta($post_id, '_event_cost', 0); // TODO: change to real value.
+        $product_post_array = self::set_event_products($event_array);
+        update_post_meta($post_id, '_event_product_post_array', $product_post_array);
     }
 
     /**
      * Function delete_event
      *
-     * @param array $parsed_json_body
+     * @param array $product_array
      *
      * @return void
      */
-    static function delete_event(array $parsed_json_body)
+    static function delete_event(array $product_array)
     {
-        $ch_events_key = $parsed_json_body['key'];
+        $ch_events_key = $product_array['key'];
         $post = self::get_event_by_events_key($ch_events_key);
 
         wp_delete_post($post->ID, true);
@@ -177,19 +182,164 @@ class Sync
     /**
      * Function generate_post_args
      *
-     * @param array $parsed_json_body
+     * @param array $product_array
      *
      * @return array
      */
-    static function generate_post_args(array $parsed_json_body): array
+    static function generate_post_args_event(array $product_array): array
     {
         $post_args = [
-            'post_title'   => $parsed_json_body['title'],
+            'post_title'   => $product_array['title'],
             'post_type'    => 'event',
             'post_status'  => 'publish',
-            'post_content' => $parsed_json_body['description'],
+            'post_content' => $product_array['description'],
         ];
 
         return $post_args;
+    }
+
+    /**
+     * Function determine_create_or_update
+     *
+     * @param $json_body
+     *
+     * @return int
+     */
+    static function determine_create_or_update_product($json_body): int
+    {
+        if (self::should_create_product($json_body)) {
+            return self::create_product($json_body);
+        } else {
+            return self::update_product($json_body);
+        }
+    }
+
+    /**
+     * Function assert_should_create_event
+     *
+     * @param array $product_array
+     *
+     * @return bool
+     */
+    static function should_create_product(array $product_array): bool
+    {
+        return is_null(self::get_product_by_events_key($product_array['key']));
+    }
+
+    /**
+     * Function create_product
+     *
+     * @param array $product_array
+     *
+     * @return int
+     */
+    static function create_product(array $product_array): int
+    {
+        $post_args = self::generate_product_post_args($product_array);
+        $post_id = wp_insert_post($post_args);
+
+        add_post_meta($post_id, '_ch_events_key', $product_array['key']);
+        add_post_meta($post_id, '_product_cost', $product_array['price']);
+
+        return $post_id;
+    }
+
+    /**
+     * Function update_product
+     *
+     * @param array $product_array
+     *
+     * @return int
+     */
+    static function update_product(array $product_array): int
+    {
+        $ch_events_key = $product_array['key'];
+        $post = self::get_product_by_events_key($ch_events_key);
+        $post_id = $post->ID;
+
+        $post_args = self::generate_product_post_args($product_array);
+        $post_args['ID'] = $post_id;
+        wp_update_post($post_args);
+        update_post_meta($post_id, '_product_cost', $product_array['price']);
+
+        return $post_id;
+    }
+
+    /**
+     * Function get_event_by_events_key
+     *
+     * @param string $ch_product_key
+     *
+     * @return \WP_Post|null
+     */
+    static function get_product_by_events_key(string $ch_product_key)
+    {
+        $posts = get_posts([
+            'meta_key'    => '_ch_events_key',
+            'meta_value'  => $ch_product_key,
+            'post_type'   => 'product',
+            'post_status' => 'any',
+        ]);
+
+        if (count($posts) > 1) {
+            throw new WISVCHException(self::EXCEPTION_MULTIPLE_SAME_EVENT_EXISTS);
+        } elseif (count($posts) === 0) {
+            return null;
+        } else {
+            return $posts[0];
+        }
+    }
+
+    /**
+     * Function generate_product_post_args
+     *
+     * @param array $product_array
+     *
+     * @return array
+     */
+    private static function generate_product_post_args(array $product_array): array
+    {
+        $post_args = [
+            'post_title'   => $product_array['title'],
+            'post_type'    => 'product',
+            'post_status'  => 'publish',
+            'post_content' => $product_array['description'],
+        ];
+
+        return $post_args;
+    }
+
+    /**
+     * Function set_event_categories
+     *
+     * @param array $event_array
+     * @param       $post_id
+     *
+     * @return void
+     */
+    private static function set_event_categories(array $event_array, $post_id): void
+    {
+        $term_array = [];
+        foreach ($event_array['categories'] as $category) {
+            $term_array[] = get_term_by('slug', strtolower($category), 'event_category')->term_id;
+        }
+        wp_set_post_terms($post_id, $term_array, 'event_category');
+    }
+
+    /**
+     * Function set_event_products
+     *
+     * @param array $event_array
+     *
+     * @return array
+     */
+    private static function set_event_products(array $event_array): array
+    {
+        $product_post_array = [];
+        foreach ($event_array['products'] as $product_array) {
+            $product_post_array[] = self::determine_create_or_update_product($product_array);
+        }
+
+        return $product_post_array;
     }
 }
