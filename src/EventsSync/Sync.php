@@ -49,6 +49,12 @@ class Sync
                 case 'EVENT_DELETE':
                     self::delete_event($json_body);
                     break;
+                case 'PRODUCT_CREATE_UPDATE':
+                    self::determine_create_or_update_product($json_body);
+                    break;
+                case 'PRODUCT_DELETE':
+                    self::delete_product($json_body);
+                    break;
                 default:
                     throw new WISVCHException(vsprintf(self::EXCEPTION_TRIGGER_NOT_EXISTS, [$trigger]));
             }
@@ -167,13 +173,13 @@ class Sync
     /**
      * Function delete_event
      *
-     * @param array $product_array
+     * @param array $event_array
      *
      * @return void
      */
-    static function delete_event(array $product_array)
+    static function delete_event(array $event_array)
     {
-        $ch_events_key = $product_array['key'];
+        $ch_events_key = $event_array['key'];
         $post = self::get_event_by_events_key($ch_events_key);
 
         wp_delete_post($post->ID, true);
@@ -182,17 +188,17 @@ class Sync
     /**
      * Function generate_post_args
      *
-     * @param array $product_array
+     * @param array $event_array
      *
      * @return array
      */
-    static function generate_post_args_event(array $product_array): array
+    static function generate_post_args_event(array $event_array): array
     {
         $post_args = [
-            'post_title'   => $product_array['title'],
+            'post_title'   => $event_array['title'],
             'post_type'    => 'event',
             'post_status'  => 'publish',
-            'post_content' => $product_array['description'],
+            'post_content' => $event_array['description'],
         ];
 
         return $post_args;
@@ -217,13 +223,13 @@ class Sync
     /**
      * Function assert_should_create_event
      *
-     * @param array $product_array
+     * @param array $event_array
      *
      * @return bool
      */
-    static function should_create_product(array $product_array): bool
+    static function should_create_product(array $event_array): bool
     {
-        return is_null(self::get_product_by_events_key($product_array['key']));
+        return is_null(self::get_product_by_events_key($event_array['key']));
     }
 
     /**
@@ -263,6 +269,21 @@ class Sync
         update_post_meta($post_id, '_product_cost', $product_array['price']);
 
         return $post_id;
+    }
+
+    /**
+     * Function delete_product
+     *
+     * @param array $product_array
+     *
+     * @return void
+     */
+    private static function delete_product(array $product_array): void
+    {
+        $ch_events_key = $product_array['key'];
+        $post = self::get_product_by_events_key($ch_events_key);
+
+        wp_delete_post($post->ID, true);
     }
 
     /**
