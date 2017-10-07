@@ -80,6 +80,47 @@ class Registration
         register_post_type($this->post_type, $args);
     }
 
+    /**
+     * Register the custom post type.
+     *
+     * @link http://codex.wordpress.org/Function_Reference/register_post_type
+     */
+    protected function register_post_type_product()
+    {
+        $labels = [
+            'name' => __('Products', 'wisvch-plugin'),
+            'singular_name' => __('Product', 'wisvch-plugin'),
+            'add_new' => __('Add Product', 'wisvch-plugin'),
+            'add_new_item' => __('Add Product', 'wisvch-plugin'),
+            'edit_item' => __('Edit Product', 'wisvch-plugin'),
+            'new_item' => __('New Product', 'wisvch-plugin'),
+            'view_item' => __('View Product', 'wisvch-plugin'),
+            'search_items' => __('Search Product', 'wisvch-plugin'),
+            'not_found' => __('No events found', 'wisvch-plugin'),
+            'not_found_in_trash' => __('No events in the trash', 'wisvch-plugin'),
+        ];
+
+        $supports = [
+            'title',
+            'editor',
+            'excerpt',
+            'thumbnail',
+            'revisions',
+        ];
+
+        $args = [
+            'labels' => $labels,
+            'supports' => $supports,
+            'public' => false,
+            'has_archive' => false,
+            'rewrite' => false
+        ];
+
+        $args = apply_filters('events_post_type_args', $args);
+
+        register_post_type('product', $args);
+    }
+
     private function register_taxonomy_category()
     {
         $labels = [

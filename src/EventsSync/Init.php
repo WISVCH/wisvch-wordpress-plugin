@@ -17,11 +17,5 @@ class Init
 
         // Register endpoints
         Routes::register_hooks();
-
-        if (is_admin()) {
-
-            // Load administration pages
-            Admin::register_hooks();
-        }
     }
 }
