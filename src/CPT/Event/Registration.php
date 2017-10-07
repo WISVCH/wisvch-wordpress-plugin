@@ -111,15 +111,9 @@ class Registration
         $args = [
             'labels' => $labels,
             'supports' => $supports,
-            'public' => true,
+            'public' => false,
             'has_archive' => false,
-            'capability_type' => 'page',
-            'rewrite' => [
-                'slug' => 'activities/event',
-                'with_front' => false,
-                'feeds' => null,
-                'pages' => false,
-            ]
+            'rewrite' => false
         ];
 
         $args = apply_filters('events_post_type_args', $args);
