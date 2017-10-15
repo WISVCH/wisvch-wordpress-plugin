@@ -2,10 +2,9 @@
 
 namespace WISVCH\EventsSync;
 
-use function get_tag;
-use function strtolower;
 use WP_REST_Request;
 use function add_post_meta;
+use function strtolower;
 use function vsprintf;
 use function wp_delete_post;
 use function wp_update_post;
@@ -38,6 +37,8 @@ class Sync
      */
     static function handle_webhook_call(WP_REST_Request $request)
     {
+        self::auth_ch_events();
+
         $json_body = $request->get_json_params();
         $trigger = $json_body['trigger'];
 
@@ -59,7 +60,7 @@ class Sync
                     throw new WISVCHException(vsprintf(self::EXCEPTION_TRIGGER_NOT_EXISTS, [$trigger]));
             }
         } catch (WISVCHException $exception) {
-            // TODO: notify somebody that something is wrong with the
+            mail("w3cie@ch.tudelft.nl", "[ERROR] Events sync", $exception->getTraceAsString());
 
             return false;
         }
@@ -362,5 +363,26 @@ class Sync
         }
 
         return $product_post_array;
+    }
+
+    /**
+     * Function auth_ch_events
+     *
+     * @return void
+     */
+    private static function auth_ch_events(): void
+    {
+        $username = $_SERVER['PHP_AUTH_USER'];
+        $password = $_SERVER['PHP_AUTH_PW'];
+
+        $user = wp_authenticate($username, $password);
+
+        if (is_wp_error($user)) {
+            throw new WISVCHException("Login attempt with username " . $username);
+        } else {
+            if (isset($user->allcaps['administrator']) === false) {
+                throw new WISVCHException("User " . $username . " has not enough rights to do this!");
+            }
+        }
     }
 }
