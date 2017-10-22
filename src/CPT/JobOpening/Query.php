@@ -17,6 +17,10 @@ class Query
         is_admin() && add_action('pre_get_posts', [__CLASS__, 'admin_filter']);
         add_action('pre_get_posts', [__CLASS__, 'job_opening_query']);
         add_filter('query_vars', [__CLASS__, 'custom_query_vars']);
+
+        // Add company name to link
+        add_action('init', [__CLASS__, 'add_rewrite_rule']);
+        add_filter('post_type_link', [__CLASS__, 'process_link'], 10, 2);
     }
 
     /**
@@ -101,5 +105,42 @@ class Query
         }
 
         return $page_ids;
+    }
+
+    /**
+     * Add rewrite rule for company name in permalink.
+     */
+    static function add_rewrite_rule()
+    {
+        add_rewrite_rule("^".Registration::PERMALINK_BASE."/([^/]+)/([^/]+)(?:/([0-9]+))?/?$", 'index.php?job_opening=$matches[2]&page=$matches[3]', 'top');
+    }
+
+    /**
+     * Add company to job opening permalinks.
+     */
+    static function process_link($post_link, $id = 0)
+    {
+
+        $post = get_post($id);
+
+        if (is_wp_error($post) || 'job_opening' !== $post->post_type) {
+            return $post_link;
+        }
+
+        // Get company ID
+        $cID = get_post_meta($post->ID, '_company_id', true);
+
+        if (empty($cID)) {
+            return $post_link;
+        } else {
+
+            $company_title = sanitize_title(get_the_title($cID));
+
+            if (empty($company_title)) {
+                return $post_link;
+            } else {
+                return home_url(user_trailingslashit(Registration::PERMALINK_BASE.'/'.$company_title.'/'.$post->post_name));
+            }
+        }
     }
 }

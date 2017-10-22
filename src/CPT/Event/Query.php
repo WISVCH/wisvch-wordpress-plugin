@@ -20,9 +20,8 @@ class Query
         add_filter('pto/posts_orderby/ignore', [__CLASS__, 'fix_pto'], 10, 3);
 
         // Add rewrite tag for event year
-        add_action('init', [__CLASS__, 'add_rewrite_tag']);
-        add_filter('post_type_link', [__CLASS__, 'event_permalink'], 1, 3);
-        add_action('parse_query', [__CLASS__, 'event_permalink_check'], 20);
+        add_action('init', [__CLASS__, 'add_rewrite_rule']);
+        add_filter('post_type_link', [__CLASS__, 'process_link'], 10, 2);
     }
 
     /**
@@ -93,19 +92,31 @@ class Query
     }
 
     /**
-     * Short-circuit queries with an event_year parameter, but without an event parameter in the URL.
-     *
-     * @param $query WP_Query object.
+     * Add rewrite rule for event year in permalink.
      */
-    static function event_permalink_check($query)
+    static function add_rewrite_rule()
+    {
+        add_rewrite_rule("^".Registration::PERMALINK_BASE."/([^/]+)/([^/]+)(?:/([0-9]+))?/?$", 'index.php?event=$matches[2]&page=$matches[3]', 'top');
+    }
+
+    /**
+     * Add event year to event permalinks.
+     */
+    static function process_link($post_link, $id = 0)
     {
 
-        $year = array_key_exists('event_year', $query->query_vars) ? $query->query_vars['event_year'] : false;
+        $post = get_post($id);
 
-        if ($query->is_main_query() && ! empty($year) && ! isset($query->query['event'])) {
-
-            $query->set_404();
-            status_header(404);
+        if (is_wp_error($post) || 'event' !== $post->post_type) {
+            return $post_link;
         }
+
+        // Get company ID
+        $date = get_post_meta($post->ID, '_event_start_date', true);
+
+        // Use post date if event date not available
+        $url_year = empty($date) ? get_the_date('Y', $post) : date('Y', strtotime($date));
+
+        return home_url(user_trailingslashit(Registration::PERMALINK_BASE.'/'.$url_year.'/'.$post->post_name));
     }
 }

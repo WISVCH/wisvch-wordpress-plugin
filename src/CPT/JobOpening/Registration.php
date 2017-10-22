@@ -13,6 +13,8 @@ class Registration
 
     public $taxonomies = ['job_type', 'job_study'];
 
+    const PERMALINK_BASE = 'career/job-openings';
+
     public function init()
     {
         // Add the team post type and taxonomies
@@ -68,7 +70,7 @@ class Registration
             'has_archive' => true,
             'capability_type' => 'post',
             'rewrite' => [
-                'slug' => 'career/job-openings',
+                'slug' => self::PERMALINK_BASE,
                 'with_front' => false,
                 'feeds' => null,
                 'pages' => false,

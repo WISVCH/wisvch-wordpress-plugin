@@ -13,6 +13,8 @@ class Registration
 
     public $taxonomies = ['event_category'];
 
+    const PERMALINK_BASE = 'activities/event';
+
     public function init()
     {
         // Add the team post type and taxonomies
@@ -63,7 +65,7 @@ class Registration
             'has_archive' => false,
             'capability_type' => 'page',
             'rewrite' => [
-                'slug' => 'activities/event/%event_year%',
+                'slug' => Registration::PERMALINK_BASE,
                 'with_front' => false,
                 'feeds' => null,
                 'pages' => false,
@@ -113,7 +115,7 @@ class Registration
             'supports' => $supports,
             'public' => false,
             'has_archive' => false,
-            'rewrite' => false
+            'rewrite' => false,
         ];
 
         $args = apply_filters('events_post_type_args', $args);
