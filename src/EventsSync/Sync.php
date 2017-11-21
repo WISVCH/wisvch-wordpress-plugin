@@ -380,7 +380,7 @@ class Sync
         if (is_wp_error($user)) {
             throw new WISVCHException("Login attempt with username " . $username);
         } else {
-            if (isset($user->allcaps['administrator']) === false) {
+            if (!current_user_can('edit_pages')) {
                 throw new WISVCHException("User " . $username . " has not enough rights to do this!");
             }
         }
