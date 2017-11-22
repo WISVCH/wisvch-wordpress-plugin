@@ -153,7 +153,7 @@ class Banner extends \WP_Widget_Media
         $class = 'banner-container';
 
         if ($url) {
-            $html = sprintf('<a href="%1$s" class="%2$s" rel="%3$s" target="%4$s" %5$s>%6$s</a>', esc_url($url), esc_attr($class), esc_attr($instance['link_rel']), ! empty($instance['link_target_blank']) ? '_blank' : '', $image_style, esc_html($instance['title']));
+            $html = sprintf('<a href="%1$s" class="%2$s" target="%3$s" %4$s>%5$s</a>', esc_url($url), esc_attr($class), ! empty($instance['link_target_blank']) ? '_blank' : '', $image_style, esc_html($instance['title']));
         } else {
             $html = sprintf('<div class="%1$s" %2$s>%3$s</div>', esc_attr($class), $image_style, esc_html($instance['title']));
         }

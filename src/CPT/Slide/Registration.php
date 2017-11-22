@@ -51,6 +51,7 @@ class Registration
             'thumbnail',
             'custom-fields',
             'revisions',
+            'page-attributes'
         ];
 
         $args = [
