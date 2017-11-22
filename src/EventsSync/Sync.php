@@ -2,6 +2,8 @@
 
 namespace WISVCH\EventsSync;
 
+use function get_current_user;
+use function user_can;
 use WP_REST_Request;
 use function add_post_meta;
 use function strtolower;
@@ -380,7 +382,7 @@ class Sync
         if (is_wp_error($user)) {
             throw new WISVCHException("Login attempt with username " . $username);
         } else {
-            if (!current_user_can('edit_pages')) {
+            if (!user_can($user->ID, 'edit_pages')) {
                 throw new WISVCHException("User " . $username . " has not enough rights to do this!");
             }
         }
