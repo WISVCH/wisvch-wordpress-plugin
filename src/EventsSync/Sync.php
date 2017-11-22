@@ -3,11 +3,6 @@
 namespace WISVCH\EventsSync;
 
 use WP_REST_Request;
-use function add_post_meta;
-use function strtolower;
-use function vsprintf;
-use function wp_delete_post;
-use function wp_update_post;
 
 /**
  * Add, update or delete CH Events.
@@ -380,7 +375,7 @@ class Sync
         if (is_wp_error($user)) {
             throw new WISVCHException("Login attempt with username " . $username);
         } else {
-            if (!current_user_can('edit_pages')) {
+            if (!user_can($user->ID, 'edit_pages')) {
                 throw new WISVCHException("User " . $username . " has not enough rights to do this!");
             }
         }
