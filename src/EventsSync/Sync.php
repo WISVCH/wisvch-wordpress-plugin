@@ -2,14 +2,7 @@
 
 namespace WISVCH\EventsSync;
 
-use function get_current_user;
-use function user_can;
 use WP_REST_Request;
-use function add_post_meta;
-use function strtolower;
-use function vsprintf;
-use function wp_delete_post;
-use function wp_update_post;
 
 /**
  * Add, update or delete CH Events.
