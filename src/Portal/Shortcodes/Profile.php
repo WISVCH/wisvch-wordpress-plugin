@@ -149,8 +149,7 @@ class Profile extends Template
 
             $email_contents = self::_buildEmail($updates, $ch_connect);
 
-            // @TODO: replace svenh with w3cie
-            $mail_sent = wp_mail(! WP_DEBUG ? "svenh@ch.tudelft.nl" : "secretary@ch.tudelft.nl", "Verzoek wijziging ledenadministratie", $email_contents);
+            $mail_sent = wp_mail("secretary@ch.tudelft.nl", "[Website] Verzoek wijziging ledenadministratie", $email_contents);
 
             if ($mail_sent) {
                 return '<h5>Success</h5><p>Changes submitted successfully. The secretary will update your information as soon as possible.</p>';
@@ -176,19 +175,14 @@ class Profile extends Template
 
         $output = "Beste secretaris,\n\n";
         $output .= "Er is een nieuwe adreswijziging via de website ingediend.\n\n";
-        $output .= "Datum: ".date_i18n('Y-m-d H:i:s')."\n";
+        $output .= "Datum: ".date_i18n('Y-m-d H:i')."\n";
         $output .= "Gebruiker: ".sanitize_text_field($user->user_login)." (ID: ".sanitize_text_field($userdata['sub']).")\n\n";
-        $output .= "Wijzigingen:\n\n";
-
-        $output .= "=====\n\n";
+        $output .= "Wijzigingen:\n";
+        $output .= "-----------\n\n";
 
         foreach ($updates as $key => $update) {
             $output .= sanitize_text_field($update[0]).': '.sanitize_text_field($update[1])."\n";
         }
-
-        $output .= "\n=====\n\n";
-
-        $output .= "Groetjes,\nW3Cie";
 
         return $output;
     }

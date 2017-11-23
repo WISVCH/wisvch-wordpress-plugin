@@ -28,8 +28,8 @@ class Init
         // CH Connect Branding
         self::chConnectBranding();
 
-        // Setup SMTP (@todo: remove, is temporary, for testing purposes only)
-        add_action('phpmailer_init', [__CLASS__, 'setUpSMTP']);
+        // Change e-mail sender
+        self::setEmailSender();
     }
 
     /**
@@ -55,22 +55,14 @@ class Init
     }
 
     /**
-     * @TODO REMOVE
+     * Change e-mail sender to sitename.
      */
-    static function setUpSMTP(\PHPMailer $phpmailer)
+    static function setEmailSender()
     {
 
-        if (defined('PHPMAILER_HOST')) {
-
-            $phpmailer->Host = PHPMAILER_HOST;
-            $phpmailer->Port = PHPMAILER_PORT; // could be different
-            $phpmailer->Username = PHPMAILER_USER; // if required
-            $phpmailer->Password = PHPMAILER_PWD; // if required
-            $phpmailer->SMTPAuth = true; // if required
-            $phpmailer->SMTPSecure = 'tls'; // enable if required, 'tls' is another possible value
-            $phpmailer->setFrom('w3cie@ch.tudelft.nl', 'ch.tudelft.nl');
-
-            $phpmailer->IsSMTP();
-        }
+        // Change login button text
+        add_filter("wp_mail_from_name", function () {
+            return get_bloginfo('name');
+        });
     }
 }
