@@ -30,10 +30,13 @@ class Feed
     public static function generate_feed()
     {
 
+        global $post;
+
         ob_start();
 
-        header('Content-type: text/calendar');
-        header('Content-Disposition: attachment; filename="ical.ics"');
+        //header('Content-type: text/calendar');
+        header('Content-type: text/plain');
+        //header('Content-Disposition: attachment; filename="ical.ics"');
 
         // iCal header
         echo "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//WISVCH Events//NONSGML Events//EN\nMETHOD:PUBLISH\n";
@@ -64,6 +67,7 @@ class Feed
             $meta = get_post_custom();
             $description = ! isset($meta['_event_short_description']) || empty($meta['_event_short_description'][0]) ? false : $meta['_event_short_description'][0];
             $location = ! isset($meta['_event_location']) || empty($meta['_event_location'][0]) ? "Unknown" : $meta['_event_location'][0];
+            $cost = ! isset($meta['_event_cost'][0]) ? false : $meta['_event_cost'][0];
 
             // N.B. event end date HAS to be set, is INNER JOIN'd within the WP_Query above.
             $end = ! isset($meta['_event_end_date']) || empty($meta['_event_end_date'][0]) ? false : strtotime($meta['_event_end_date'][0]);
@@ -83,18 +87,34 @@ class Feed
             echo "DTSTART;TZID=Europe/Amsterdam:".date('Ymd\THis', $start)."\nDTEND;TZID=Europe/Amsterdam:".date('Ymd\THis', $end)."\n";
 
             // Event title
-            echo "SUMMARY:".static::escape_string(the_title_attribute(['echo' => false]))."\n";
+            echo "SUMMARY:".static::escape_string($post->post_title)."\n";
 
             // Event description
             if (false !== $description) {
+
+                $description .= '<br>';
+
+                // Add cost
+                if (isset($cost) && is_numeric($cost) && $cost >= 0) {
+
+                    $formatted_cost = $cost > 0 ? '€'.number_format($cost, 2, ',', '.') : 'Free!';
+                    $description .= '<br>Cost: '.$formatted_cost;
+                }
+
+                // Add categories
+                $categories = get_the_terms($post->ID, 'event_category');
+                if (! empty($categories) && is_array($categories)) {
+                    $description .= '<br>Category: '.implode(', ', wp_list_pluck($categories, 'name')).'.';
+                }
+
+                // Add link to event
+                $description .= '<br><br><a href="'.get_permalink().'">View event on our website</a>';
+
                 echo "DESCRIPTION:".static::escape_string($description)."\n";
-                // @TODO add cost information
             }
 
             // Event location
             echo "LOCATION:".static::escape_string($location)."\n";
-
-            // @TODO: add category information
 
             // Event permalink
             echo "URL;TYPE=URI:".get_permalink()."\n";
