@@ -34,9 +34,8 @@ class Feed
 
         ob_start();
 
-        //header('Content-type: text/calendar');
-        header('Content-type: text/plain');
-        //header('Content-Disposition: attachment; filename="ical.ics"');
+        header('Content-type: text/calendar');
+        header('Content-Disposition: attachment; filename="ical.ics"');
 
         // iCal header
         echo "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//WISVCH Events//NONSGML Events//EN\nMETHOD:PUBLISH\n";
