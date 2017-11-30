@@ -119,13 +119,17 @@ class Api
             // Get post meta
             $meta = self::get_meta($e->ID);
 
+            // Get categories
+            $categories = get_the_terms($e->ID, 'event_category');
+
             // Add event to result array
             $fullcalendar_arr = [
                 'id' => $e->ID,
                 'title' => $e->post_title,
                 'start' => date_i18n('c', strtotime($meta['_event_start_date'])),
                 'url' => get_permalink($e),
-                'allday' => false
+                'allday' => false,
+                'categories' => is_array($categories) ? wp_list_pluck($categories, 'slug') : false,
             ];
 
             // Make event last all day if no end date is set.
