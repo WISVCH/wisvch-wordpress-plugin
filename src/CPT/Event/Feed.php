@@ -49,8 +49,8 @@ class Feed
             'meta_query' => [
                 'event_clause' => [
                     'key' => '_event_end_date',
-                    'type' => 'DATE',
-                    'value' => date('Y-m-d H:i'),
+                    'type' => 'DATETIME',
+                    'value' => date_i18n('Y-m-d H:i'),
                     'compare' => '>',
                 ],
             ],

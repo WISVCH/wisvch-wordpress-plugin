@@ -119,14 +119,30 @@ class Api
             // Get post meta
             $meta = self::get_meta($e->ID);
 
+            // Get categories
+            $categories = get_the_terms($e->ID, 'event_category');
+
             // Add event to result array
             $fullcalendar_arr = [
                 'id' => $e->ID,
                 'title' => $e->post_title,
                 'start' => date_i18n('c', strtotime($meta['_event_start_date'])),
                 'url' => get_permalink($e),
-                'allday' => false
+                'allday' => false,
+                'categories' => is_array($categories) ? wp_list_pluck($categories, 'slug') : false,
             ];
+
+            // Add primary category (if Yoast SEO enabled)
+            if (class_exists('\WPSEO_Primary_Term')) {
+
+                $wpseo_primary_term = new \WPSEO_Primary_Term('event_category', $e->ID);
+                $wpseo_primary_term = $wpseo_primary_term->get_primary_term();
+                $term = get_term($wpseo_primary_term);
+
+                if (! is_wp_error($term)) {
+                    $fullcalendar_arr['primary_category'] = $term->slug;
+                }
+            }
 
             // Make event last all day if no end date is set.
             if (empty($meta['_event_end_date'])) {
