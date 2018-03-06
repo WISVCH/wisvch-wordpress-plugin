@@ -107,7 +107,13 @@ class Api
                     'type' => 'DATETIME',
                     'compare' => 'BETWEEN',
                 ],
+                'orderby_query' => [
+                    'key' => '_event_start_date',
+                    'type' => 'DATETIME',
+                ],
             ],
+            'orderby' => 'orderby_query',
+            'order' => 'ASC',
         ]);
 
         $events = [];
@@ -126,6 +132,7 @@ class Api
             $fullcalendar_arr = [
                 'id' => $e->ID,
                 'title' => $e->post_title,
+                'description' => $e->post_content,
                 'start' => date_i18n('c', strtotime($meta['_event_start_date'])),
                 'url' => get_permalink($e),
                 'allday' => false,
