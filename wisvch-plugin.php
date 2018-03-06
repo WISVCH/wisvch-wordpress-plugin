@@ -45,6 +45,7 @@ class WISVCH_Plugin
         WISVCH_Plugin::dashboard_glancer();
 
         // Init custom post types
+        new CPT\Ambassador\Init();
         new CPT\Board\Init();
         new CPT\Committee\Init();
         new CPT\Company\Init();
