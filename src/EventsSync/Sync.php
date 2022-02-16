@@ -15,6 +15,7 @@ class Sync
     const EXCEPTION_TRIGGER_NOT_EXISTS         = 'Handle for trigger %s does not exists';
     const EXCEPTION_EVENT_ALREADY_EXISTS       = 'Event already exists and should not be created again';
     const EXCEPTION_MULTIPLE_SAME_EVENT_EXISTS = 'Number of event posts count is above 1.';
+    const EXCEPTION_NO_AUTH_HEADER             = 'No authorization header found';
 
     /**
      * Initialize plugin.
@@ -367,8 +368,20 @@ class Sync
      */
     private static function auth_ch_events(): void
     {
-        $username = $_SERVER['PHP_AUTH_USER'];
-        $password = $_SERVER['PHP_AUTH_PW'];
+        // Get custom 'EventAuthorization' header.
+        if (isset($_SERVER["HTTP_EVENTAUTHORIZATION"]) && 0 === stripos($_SERVER["HTTP_EVENTAUTHORIZATION"], 'basic ')) {
+            $exploded = explode(':', base64_decode(substr($_SERVER["HTTP_EVENTAUTHORIZATION"], 6)), 2);
+            if (2 == \count($exploded)) {
+                list($username, $password) = $exploded;
+            }
+        } 
+        // Fallback to default 'Authorization' header.
+        else if(isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
+            $username = $_SERVER['PHP_AUTH_USER'];
+            $password = $_SERVER['PHP_AUTH_PW'];
+        } else {
+            throw new WISVCHException(self::EXCEPTION_NO_AUTH_HEADER);
+        }
 
         $user = wp_authenticate($username, $password);
 
