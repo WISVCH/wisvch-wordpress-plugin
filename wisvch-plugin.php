@@ -25,6 +25,10 @@ define('WISVCH_ASSET_BASE', __FILE__);
 // Load autoloader
 require "autoloader.php";
 
+// Disable xmlrpc.php
+// https://kinsta.com/nl/blog/xmlrpc-php/#schakel-xmlrpcphp-uit-zonder-plugin
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
 /**
  * Initializes WordPress plug-in.
  *
