@@ -41,7 +41,7 @@ class Feed
         echo "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//WISVCH Events//NONSGML Events//EN\nMETHOD:PUBLISH\n";
         echo "X-WR-CALNAME;VALUE=TEXT:W.I.S.V. 'Christiaan Huygens'\nCALSCALE:GREGORIAN\n";
 
-        // Get events
+        // Get all events since last year
         // @TODO: convert to raw SQL, incorporate meta query for performance
         $events = new \WP_Query([
             'post_type' => 'event',
@@ -50,7 +50,7 @@ class Feed
                 'event_clause' => [
                     'key' => '_event_end_date',
                     'type' => 'DATETIME',
-                    'value' => date_i18n('Y-m-d H:i'),
+                    'value' => date_i18n('Y-m-d H:i', strtotime('-1 year')),
                     'compare' => '>',
                 ],
             ],
