@@ -5,6 +5,7 @@ namespace WISVCH\Portal\Shortcodes;
 use WISVCH\Portal\Member;
 use WISVCH\Portal\Shortcodes;
 use WISVCH\Portal\Template;
+use WISVCH\Portal\Dienst2;
 
 /**
  * Portal edit profile page.
@@ -31,6 +32,12 @@ class Profile extends Template
 
         // Get CH Connect data
         $return_data['ch_connect'] = Member::get_user_claim();
+
+        if ($return_data['ch_member']) {
+            // Get user data from Dienst2
+            $dienst2 = new Dienst2();
+            $return_data['ch_dienst2'] = $dienst2->get();
+        }
 
         // Process form if POST request
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
@@ -72,7 +79,7 @@ class Profile extends Template
     {
 
         // Store has to be an array
-        if (! is_array($store)) {
+        if (!is_array($store)) {
             return "";
         }
 
@@ -82,7 +89,7 @@ class Profile extends Template
         }
 
         // Check for non-multidimensional key
-        if (! is_array($key)) {
+        if (!is_array($key)) {
 
             if (array_key_exists($key, $store)) {
                 return $store[$key];
@@ -116,7 +123,7 @@ class Profile extends Template
         }
 
         // Check if logged in
-        if (! Shortcodes::check_auth()) {
+        if (!Shortcodes::check_auth()) {
             return "<h5>Error</h5><p>You are not logged in.</p>";
         }
 
@@ -175,13 +182,13 @@ class Profile extends Template
 
         $output = "Beste secretaris,\n\n";
         $output .= "Er is een nieuwe adreswijziging via de website ingediend.\n\n";
-        $output .= "Datum: ".date_i18n('Y-m-d H:i')."\n";
-        $output .= "Gebruiker: ".sanitize_text_field($user->user_login)." (ID: ".sanitize_text_field($userdata['sub']).")\n\n";
+        $output .= "Datum: " . date_i18n('Y-m-d H:i') . "\n";
+        $output .= "Gebruiker: " . sanitize_text_field($user->user_login) . " (ID: " . sanitize_text_field($userdata['sub']) . ")\n\n";
         $output .= "Wijzigingen:\n";
         $output .= "-----------\n\n";
 
         foreach ($updates as $key => $update) {
-            $output .= sanitize_text_field($update[0]).': '.sanitize_text_field($update[1])."\n";
+            $output .= sanitize_text_field($update[0]) . ': ' . sanitize_text_field($update[1]) . "\n";
         }
 
         return $output;

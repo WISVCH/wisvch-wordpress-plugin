@@ -9,16 +9,25 @@ namespace WISVCH\Portal;
  */
 class Dienst2
 {
-    const DIENST2_API_URL = 'wisvch_dienst2_api_url';
-    const DIENST2_API_TOKEN = 'wisvch_dienst2_api_token';
+    public const DIENST2_API_URL = 'wisvch_dienst2_api_url';
+    public const DIENST2_API_TOKEN = 'wisvch_dienst2_api_token';
+    public const CONNECT_SUBJECT_PREFIX = 'WISVCH.';
 
-    /**
-     * Dienst2 constructor.
-     */
-    public function init()
+    protected $dienst2_person_base_url;
+
+    public function __construct()
     {
-        // add_action('admin_menu', [$this, 'addAdminMenu']);
-        // add_action('admin_init', [$this, 'registerSettings']);
+        $is_ch_member = Member::_is_ch_member();
+        if (!$is_ch_member) {
+            return;
+        }
+
+        // Get CH Connect data
+        $claim = Member::get_user_claim();
+        $sub = str_replace(self::CONNECT_SUBJECT_PREFIX, '', $claim['sub']);
+        $sub = 1;
+
+        $this->dienst2_person_base_url = $this->getApiUrl() . 'people/' . $sub . '/';
     }
 
     /**
@@ -46,9 +55,9 @@ class Dienst2
      * 
      * @param string $path
      */
-    public function get(string $path)
+    public function get(string $path = '')
     {
-        $url = $this->getApiUrl() . $path;
+        $url = $this->dienst2_person_base_url . $path;
         $headers = [
             'Authorization' => 'Token ' . $this->getApiToken(),
         ];
@@ -60,7 +69,12 @@ class Dienst2
             ]
         );
 
-        $body = wp_remote_retrieve_body($response);
-        return json_decode($body);
+        if (is_wp_error($response)) {
+            throw new \Exception($response->get_error_message());
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        return $body;
     }
 }
