@@ -45,7 +45,6 @@ class Dienst2
         // Get CH Connect data
         $claim = Member::get_user_claim();
         $sub = str_replace(self::CONNECT_SUBJECT_PREFIX, '', $claim['sub']);
-        $sub = 1;
 
         $this->dienst2_person_base_url = $this->getApiUrl() . 'people/' . $sub . '/';
     }
