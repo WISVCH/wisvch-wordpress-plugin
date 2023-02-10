@@ -126,9 +126,7 @@ class Dienst2
             throw new \Exception($response->get_error_message());
         }
 
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-        print_r($body);
-        return $body;
+        return json_decode(wp_remote_retrieve_body($response), true);
     }
 
     /**
