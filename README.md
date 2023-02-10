@@ -11,8 +11,8 @@ WordPress plugin for W.I.S.V. 'Christiaan Huygens', carefully crafted by the W3C
 4. [Log into WordPress](https://codex.wordpress.org/First_Steps_With_WordPress), go to `Plugins > Installed Plugins` 
 and activate `	
 WISVCH WordPress Enhancements`.
-
-5. Start coding!
+5. Set the following PHP environment variables: `DIENST2_API_URL` and `DIENST2_API_TOKEN`.
+6. Start coding!
 
 ## Usage
 

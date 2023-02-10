@@ -9,13 +9,13 @@ namespace WISVCH;
  * @wordpress-plugin
  * Plugin Name:       WISVCH WordPress Enhancements
  * Description:       Adds custom post types, widgets and user portal.
- * Version:           1.0.0
+ * Version:           1.0.13
  * Author:            W3Cie
  * Author URI:        W3Cie <w3cie@ch.tudelft.nl>
  */
 
 // If this file is called directly, abort.
-if (! defined('WPINC')) {
+if (!defined('WPINC')) {
     die;
 }
 
@@ -27,7 +27,7 @@ require "autoloader.php";
 
 // Disable xmlrpc.php
 // https://kinsta.com/nl/blog/xmlrpc-php/#schakel-xmlrpcphp-uit-zonder-plugin
-add_filter( 'xmlrpc_enabled', '__return_false' );
+add_filter('xmlrpc_enabled', '__return_false');
 
 /**
  * Initializes WordPress plug-in.
@@ -89,14 +89,14 @@ class WISVCH_Plugin
         $position = 39;
 
         // Do not overwrite existing menu items
-        while (! empty($menu[$position])) {
+        while (!empty($menu[$position])) {
             $position++;
         }
 
         $menu[$position] = [
             0 => '',                            // The text of the menu item
             1 => 'read',                        // Permission level required to view the item
-            2 => 'separator'.$position,       // The ID of the menu item
+            2 => 'separator' . $position,       // The ID of the menu item
             3 => '',                            // Empty by default.
             4 => 'wp-menu-separator'            // Custom class names for the menu item
         ];
@@ -114,8 +114,8 @@ class WISVCH_Plugin
         if (isset(self::$dashboard_glancer)) {
             return self::$dashboard_glancer;
         } else {
-            if (! class_exists(\Gamajo_Dashboard_Glancer::class)) {
-                require plugin_dir_path(__FILE__).'lib/class-gamajo-dashboard-glancer.php';  // WP 3.8
+            if (!class_exists(\Gamajo_Dashboard_Glancer::class)) {
+                require plugin_dir_path(__FILE__) . 'lib/class-gamajo-dashboard-glancer.php';  // WP 3.8
             }
 
             return self::$dashboard_glancer = new \Gamajo_Dashboard_Glancer();
@@ -129,7 +129,7 @@ class WISVCH_Plugin
     {
 
         // Create custom roles.
-        if (! \WISVCH\Portal\Member::register_role()) {
+        if (!\WISVCH\Portal\Member::register_role()) {
             wp_die("Could not register custom CH Member role.", "Fatal error", ['back_link' => true]);
         }
 
