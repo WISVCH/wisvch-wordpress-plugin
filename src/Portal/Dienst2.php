@@ -9,8 +9,6 @@ namespace WISVCH\Portal;
  */
 class Dienst2
 {
-    public const DIENST2_API_URL = 'wisvch_dienst2_api_url';
-    public const DIENST2_API_TOKEN = 'wisvch_dienst2_api_token';
     public const DIENST2_ALLOWED_FIELDS = [
         'pronouns',
         'email',
@@ -59,7 +57,7 @@ class Dienst2
      */
     private function getApiToken()
     {
-        return get_option(self::DIENST2_API_TOKEN);
+        return getenv('DIENST2_API_TOKEN');
     }
 
     /**
@@ -69,7 +67,7 @@ class Dienst2
      */
     private function getApiUrl()
     {
-        return get_option(self::DIENST2_API_URL);
+        return getenv('DIENST2_API_URL');
     }
 
     /**

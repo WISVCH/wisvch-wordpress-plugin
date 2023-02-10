@@ -63,7 +63,6 @@ class WISVCH_Plugin
 
         // Init Portal
         new Portal\Init();
-        new Portal\Dienst2Settings();
 
         // Init Events Synchronizer
         new EventsSync\Init();
