@@ -165,7 +165,7 @@ class Profile extends Template
                 return '<h5>Success</h5><p>Changes submitted successfully. The secretary will review your changes and contact you if necessary.</p>';
             }
 
-            return "<h5>Error</h5><p>Changes submitted successfully.</p>";
+            return "<h5>Success</h5><p>Changes submitted successfully.</p>";
         } elseif (count($updates) === 0) {
             return "<h5>Warning</h5><p>There were no changes to submit.</p>";
         }
