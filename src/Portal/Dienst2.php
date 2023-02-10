@@ -26,6 +26,13 @@ class Dienst2
         'mail_education',
     ];
 
+    public const DIENST2_CHECKBOX_FIELDS = [
+        'machazine',
+        'mail_announcements',
+        'mail_company',
+        'mail_education',
+    ];
+
     public const CONNECT_SUBJECT_PREFIX = 'WISVCH.';
 
     protected $dienst2_person_base_url;
@@ -94,12 +101,12 @@ class Dienst2
     }
 
     /**
-     * Put request with authentication.
+     * Patch request with authentication.
      * 
      * @param string $path
      * @param array $data
      */
-    private function put(string $path = '', array $data = [])
+    private function patch(string $path = '', array $data = [])
     {
         $url = $this->dienst2_person_base_url . $path;
         $headers = [
@@ -109,7 +116,7 @@ class Dienst2
         $response = wp_remote_request(
             $url,
             [
-                'method' => 'PUT',
+                'method' => 'PATCH',
                 'headers' => $headers,
                 'body' => $data,
             ]
@@ -154,6 +161,6 @@ class Dienst2
         $data['surname'] = $person['surname'];
         $data['revision_comment'] = "Updated by {$person['formatted_name']} via the website.";
 
-        return $this->put('', $data);
+        return $this->patch('', $data);
     }
 }

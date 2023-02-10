@@ -129,15 +129,23 @@ class Profile extends Template
         $dienst2 = new Dienst2();
         $profile = $dienst2->getPerson();
         $allowedFields = Dienst2::DIENST2_ALLOWED_FIELDS;
+        $checkboxFields = Dienst2::DIENST2_CHECKBOX_FIELDS;
 
         // Check which fields are updated
         $updates = [];
 
         foreach ($allowedFields as $field) {
             $userField = 'user_' . $field;
-            if (array_key_exists($userField, $_POST)) {
-                // Check if field is changed, or if the value is 1 (checkbox)
-                if ($profile[$field] != $_POST[$userField] || $_POST[$userField] == 1) {
+            // Always pass true or false for checkboxes
+            if (in_array($field, $checkboxFields)) {
+                if (array_key_exists($userField, $_POST)) {
+                    $updates[$field] = true;
+                } else {
+                    $updates[$field] = false;
+                }
+            } else if (array_key_exists($userField, $_POST)) {
+                // Check if field is changed
+                if ($profile[$field] != $_POST[$userField]) {
                     $updates[$field] = sanitize_text_field($_POST[$userField]);
                 }
             }
@@ -147,15 +155,17 @@ class Profile extends Template
         if (count($updates) > 0) {
             try {
                 $dienst2->updatePerson($updates);
-
-                $email_contents = self::_buildEmail($updates, $ch_connect);
-                $mail_sent = wp_mail("secretary@ch.tudelft.nl", "[Website] Verzoek wijziging ledenadministratie", $email_contents);
-                if ($mail_sent) {
-                    return '<h5>Success</h5><p>Changes submitted successfully. The secretary will update your information as soon as possible.</p>';
-                }
             } catch (\Exception $e) {
                 return "<h5>Error</h5><p>Could not update profile information.</p>";
             }
+
+            $email_contents = self::_buildEmail($updates, $ch_connect);
+            $mail_sent = wp_mail("secretary@ch.tudelft.nl", "[Website] Wijziging ledenadministratie", $email_contents);
+            if ($mail_sent) {
+                return '<h5>Success</h5><p>Changes submitted successfully. The secretary will review your changes and contact you if necessary.</p>';
+            }
+
+            return "<h5>Error</h5><p>Changes submitted successfully.</p>";
         } elseif (count($updates) === 0) {
             return "<h5>Warning</h5><p>There were no changes to submit.</p>";
         }
@@ -176,14 +186,14 @@ class Profile extends Template
         $user = wp_get_current_user();
 
         $output = "Beste secretaris,\n\n";
-        $output .= "Er is een nieuwe adreswijziging via de website ingediend.\n\n";
+        $output .= "Er is een nieuwe adreswijziging of gegevenswijziging via de website ingediend.\n\n";
         $output .= "Datum: " . date_i18n('Y-m-d H:i') . "\n";
         $output .= "Gebruiker: " . sanitize_text_field($user->user_login) . " (ID: " . sanitize_text_field($userdata['sub']) . ")\n\n";
         $output .= "Wijzigingen:\n";
         $output .= "-----------\n\n";
 
         foreach ($updates as $key => $update) {
-            $output .= sanitize_text_field($update[0]) . ': ' . sanitize_text_field($update[1]) . "\n";
+            $output .= ucfirst($key) . ": " . sanitize_text_field($update) . "\n";
         }
 
         return $output;
