@@ -33,15 +33,15 @@ class Profile extends Template
         // Get CH Connect data
         $return_data['ch_connect'] = Member::get_user_claim();
 
+        // Process form if POST request and user is CH member
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' && $return_data['ch_member']) {
+            $return_data['notice'] = self::_processForm($return_data['ch_connect']);
+        }
+
         if ($return_data['ch_member']) {
             // Get user data from Dienst2
             $dienst2 = new Dienst2();
-            $return_data['ch_dienst2'] = $dienst2->get();
-        }
-
-        // Process form if POST request
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-            $return_data['notice'] = self::_processForm($return_data['ch_connect']);
+            $return_data['ch_dienst2'] = $dienst2->getPerson();
         }
 
         return $return_data;
@@ -126,40 +126,35 @@ class Profile extends Template
         if (!Shortcodes::check_auth()) {
             return "<h5>Error</h5><p>You are not logged in.</p>";
         }
+        $dienst2 = new Dienst2();
+        $profile = $dienst2->getPerson();
+        $allowedFields = Dienst2::DIENST2_ALLOWED_FIELDS;
 
-        $inputs = [
-            'user_name' => 'Full Name',
-            'user_given_name' => 'Given Name',
-            'user_birthdate' => 'Birth Date',
-            'user_email' => 'Email Address',
-            'user_phone' => 'Phone',
-            'user_street_address' => 'Address',
-            'user_zip' => 'Postal Code',
-            'user_city' => 'City',
-            'user_country' => 'Country',
-            'user_studentno' => 'Student Number',
-            'user_netid' => 'NetID',
-        ];
-
+        // Check which fields are updated
         $updates = [];
 
-        // Store updates
-        foreach ($inputs as $field_name => $field_title) {
-
-            if (array_key_exists($field_name, $_POST)) {
-                $updates[$field_name] = [$field_title, sanitize_text_field($_POST[$field_name])];
+        foreach ($allowedFields as $field) {
+            $userField = 'user_' . $field;
+            if (array_key_exists($userField, $_POST)) {
+                // Check if field is changed, or if the value is 1 (checkbox)
+                if ($profile[$field] != $_POST[$userField] || $_POST[$userField] == 1) {
+                    $updates[$field] = sanitize_text_field($_POST[$userField]);
+                }
             }
         }
 
         // Send email with updates
         if (count($updates) > 0) {
+            try {
+                $dienst2->updatePerson($updates);
 
-            $email_contents = self::_buildEmail($updates, $ch_connect);
-
-            $mail_sent = wp_mail("secretary@ch.tudelft.nl", "[Website] Verzoek wijziging ledenadministratie", $email_contents);
-
-            if ($mail_sent) {
-                return '<h5>Success</h5><p>Changes submitted successfully. The secretary will update your information as soon as possible.</p>';
+                $email_contents = self::_buildEmail($updates, $ch_connect);
+                $mail_sent = wp_mail("secretary@ch.tudelft.nl", "[Website] Verzoek wijziging ledenadministratie", $email_contents);
+                if ($mail_sent) {
+                    return '<h5>Success</h5><p>Changes submitted successfully. The secretary will update your information as soon as possible.</p>';
+                }
+            } catch (\Exception $e) {
+                return "<h5>Error</h5><p>Could not update profile information.</p>";
             }
         } elseif (count($updates) === 0) {
             return "<h5>Warning</h5><p>There were no changes to submit.</p>";

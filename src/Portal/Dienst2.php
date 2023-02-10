@@ -11,6 +11,21 @@ class Dienst2
 {
     public const DIENST2_API_URL = 'wisvch_dienst2_api_url';
     public const DIENST2_API_TOKEN = 'wisvch_dienst2_api_token';
+    public const DIENST2_ALLOWED_FIELDS = [
+        'pronouns',
+        'email',
+        'phone_mobile',
+        'street_name',
+        'house_number',
+        'postcode',
+        'city',
+        'country',
+        'machazine',
+        'mail_announcements',
+        'mail_company',
+        'mail_education',
+    ];
+
     public const CONNECT_SUBJECT_PREFIX = 'WISVCH.';
 
     protected $dienst2_person_base_url;
@@ -55,7 +70,7 @@ class Dienst2
      * 
      * @param string $path
      */
-    public function get(string $path = '')
+    private function get(string $path = '')
     {
         $url = $this->dienst2_person_base_url . $path;
         $headers = [
@@ -76,5 +91,69 @@ class Dienst2
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         return $body;
+    }
+
+    /**
+     * Put request with authentication.
+     * 
+     * @param string $path
+     * @param array $data
+     */
+    private function put(string $path = '', array $data = [])
+    {
+        $url = $this->dienst2_person_base_url . $path;
+        $headers = [
+            'Authorization' => 'Token ' . $this->getApiToken(),
+        ];
+
+        $response = wp_remote_request(
+            $url,
+            [
+                'method' => 'PUT',
+                'headers' => $headers,
+                'body' => $data,
+            ]
+        );
+
+        if (is_wp_error($response)) {
+            throw new \Exception($response->get_error_message());
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        print_r($body);
+        return $body;
+    }
+
+    /**
+     * Get the user's profile.
+     * 
+     * @return array
+     */
+    public function getPerson()
+    {
+        return $this->get();
+    }
+
+    /**
+     * Update the user's profile.
+     * 
+     * @param array $data
+     * @return array
+     */
+    public function updatePerson(array $data)
+    {
+        $allowed_fields = self::DIENST2_ALLOWED_FIELDS;
+        $data = array_filter($data, function ($key) use ($allowed_fields) {
+            return in_array($key, $allowed_fields);
+        }, ARRAY_FILTER_USE_KEY);
+
+        # Set the required fields to the current values
+        $person = $this->getPerson();
+        $data['initials'] = $person['initials'];
+        $data['firstname'] = $person['firstname'];
+        $data['surname'] = $person['surname'];
+        $data['revision_comment'] = "Updated by {$person['formatted_name']} via the website.";
+
+        return $this->put('', $data);
     }
 }
