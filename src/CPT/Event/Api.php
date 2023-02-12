@@ -57,8 +57,13 @@ class Api
         register_rest_route('wp/v2', '/events/fullcalendar', [
             'methods' => 'GET',
             'callback' => [__CLASS__, 'get_fullcalendar_data'],
+			'permission_callback' => [__CLASS__, 'privileged_permission_callback'],
         ]);
     }
+
+	public static function privileged_permission_callback() {
+		return current_user_can( 'edit_pages' );
+	}
 
     /**
      * Get Event metadata.
