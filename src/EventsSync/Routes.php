@@ -29,11 +29,7 @@ class Routes
             [
                 'methods'  => 'POST',
                 'callback' => [Sync::class, 'handle_webhook_call'],
-                'permission_callback' => [__CLASS__, 'privileged_permission_callback'],
+                'permission_callback' => '__return_true'
             ]);
     }
-
-	static function privileged_permission_callback() {
-		return current_user_can( 'edit_pages' );
-	}
 }
