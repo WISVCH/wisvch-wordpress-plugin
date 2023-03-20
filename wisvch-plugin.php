@@ -9,7 +9,7 @@ namespace WISVCH;
  * @wordpress-plugin
  * Plugin Name:       WISVCH WordPress Enhancements
  * Description:       Adds custom post types, widgets and user portal.
- * Version:           1.0.13
+ * Version:           1.0.13.1
  * Author:            W3Cie
  * Author URI:        W3Cie <w3cie@ch.tudelft.nl>
  */
