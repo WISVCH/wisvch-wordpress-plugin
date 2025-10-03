@@ -9,9 +9,9 @@ namespace WISVCH\Portal;
  */
 class Member
 {
-    const ADMINISTRATOR_LDAP_GROUPS = ['w3cie'];
+    const ADMINISTRATOR_GOOGLE_GROUPS = ['beheer'];
 
-    const EDITOR_LDAP_GROUPS = ['website'];
+    const EDITOR_GOOGLE_GROUPS = ['bestuur', 'vc'];
 
     /**
      * Hook into WordPress.
@@ -53,13 +53,13 @@ class Member
     static function ch_connect_user_claim_update(\WP_User $user, $claim)
     {
 
-        // Skip function if no LDAP group access provided by user
-        if (! isset($claim['ldap_groups']) || ! is_array($claim['ldap_groups'])) {
+        // Skip function if no google group access provided by user
+        if (! isset($claim['google_groups']) || ! is_array($claim['google_groups'])) {
             return;
         }
 
         // Administrator
-        if (count(array_intersect(self::ADMINISTRATOR_LDAP_GROUPS, $claim['ldap_groups'])) > 0) {
+        if (count(array_intersect(self::ADMINISTRATOR_GOOGLE_GROUPS, $claim['google_groups'])) > 0) {
 
             // Add
             if (! $user->has_role('administrator')) {
@@ -74,7 +74,7 @@ class Member
         }
 
         // Editor
-        if (count(array_intersect(self::EDITOR_LDAP_GROUPS, $claim['ldap_groups'])) > 0) {
+        if (count(array_intersect(self::EDITOR_GOOGLE_GROUPS, $claim['google_groups'])) > 0) {
 
             // Add
             if (! $user->has_role('editor')) {
