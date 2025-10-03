@@ -50,7 +50,7 @@ class Init
 
         // Change login button text
         add_filter("openid-connect-generic-login-button-text", function () {
-            return "Login with CH Connect";
+            return "Login with CH Account";
         });
     }
 
